@@ -1,0 +1,218 @@
+{
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "age": 30,
+  "password": "password123",
+  "role": "UI",
+  "address": {
+    "address_line_1": "123 Main Street",
+    "address_line_2": "Apt 4B",
+    "city": "New York",
+    "state": "NY",
+    "country": "USA",
+    "pincode": "10001"
+  },
+  "departmentId": 1,
+  "joiningDate": "2023-07-15",
+  "experience": 5
+}
+
+
+{
+  "name": "Jane Smith",
+  "email": "jane.smith@example.com",
+  "age": 28,
+  "password": "pa$$w0rd",
+  "role": "UI",
+  "address": {
+    "address_line_1": "456 Oak Avenue",
+    "address_line_2": "New Jersey",
+    "city": "Los Angeles",
+    "state": "CA",
+    "country": "USA",
+    "pincode": "90001"
+  },
+  "departmentId": 1,
+  "joiningDate": "2023-06-20",
+  "experience": 7
+}
+
+
+{
+  "name": "Michael Johnson",
+  "email": "michael.johnson@example.com",
+  "age": 35,
+  "password": "securePass1!",
+  "role": "UI",
+  "address": {
+    "address_line_1": "789 Elm Street",
+    "address_line_2": "Suite 200",
+    "city": "Chicago",
+    "state": "IL",
+    "country": "USA",
+    "pincode": "60601"
+  },
+  "departmentId": 1,
+  "joiningDate": "2023-08-10",
+  "experience": 10
+}
+
+
+{
+  "name": "Emily Williams",
+  "email": "emily.williams@example.com",
+  "age": 24,
+  "password": "p@ssW0rd",
+  "role": "HR",
+  "address": {
+    "address_line_1": "1001 Willow Lane",
+    "address_line_2": "Super Man",
+    "city": "San Francisco",
+    "state": "CA",
+    "country": "USA",
+    "pincode": "94105"
+  },
+  "departmentId": 4,
+  "joiningDate": "2023-09-05",
+  "experience": 3
+}
+
+
+
+{
+  "name": "Daniel Brown",
+  "email": "daniel.brown@example.com",
+  "age": 29,
+  "password": "brownie123",
+  "role": "MANAGER",
+  "address": {
+    "address_line_1": "505 Maple Street",
+    "address_line_2": "Apt 12",
+    "city": "Seattle",
+    "state": "WA",
+    "country": "USA",
+    "pincode": "98101"
+  },
+  "departmentId": 1,
+  "joiningDate": "2023-10-20",
+  "experience": 6
+}
+
+
+{
+  "name": "Olivia Lee",
+  "email": "olivia.lee@example.com",
+  "age": 27,
+  "password": "password1234",
+  "role": "HR",
+  "address": {
+    "address_line_1": "789 Pine Street",
+    "address_line_2": "",
+    "city": "Boston",
+    "state": "MA",
+    "country": "USA",
+    "pincode": "02108"
+  },
+  "departmentId": 6,
+  "joiningDate": "2023-11-15",
+  "experience": 4
+}
+
+{
+  "name": "William Johnson",
+  "email": "william.johnson@example.com",
+  "age": 32,
+  "password": "pass123word",
+  "role": "Developer",
+  "address": {
+    "address_line_1": "2020 Oakwood Drive",
+    "address_line_2": "",
+    "city": "Austin",
+    "state": "TX",
+    "country": "USA",
+    "pincode": "78701"
+  },
+  "departmentId": 7,
+  "joiningDate": "2023-12-10",
+  "experience": 9
+}
+
+
+{
+  "name": "William Johnson",
+  "email": "william.johnson@example.com",
+  "age": 32,
+  "password": "pass123word",
+  "role": "Developer",
+  "address": {
+    "address_line_1": "2020 Oakwood Drive",
+    "address_line_2": "",
+    "city": "Austin",
+    "state": "TX",
+    "country": "USA",
+    "pincode": "78701"
+  },
+  "departmentId": 7,
+  "joiningDate": "2023-12-10",
+  "experience": 9
+}
+
+{
+  "name": "Sophia Martinez",
+  "email": "sophia.martinez@example.com",
+  "age": 25,
+  "password": "pass@123",
+  "role": "Manager",
+  "address": {
+    "address_line_1": "303 Park Avenue",
+    "address_line_2": "",
+    "city": "Denver",
+    "state": "CO",
+    "country": "USA",
+    "pincode": "80202"
+  },
+  "departmentId": 8,
+  "joiningDate": "2024-01-05",
+  "experience": 2
+}
+
+
+{
+  "name": "James Wilson",
+  "email": "james.wilson@example.com",
+  "age": 26,
+  "password": "jwpass123",
+  "role": "HR",
+  "address": {
+    "address_line_1": "404 Cherry Lane",
+    "address_line_2": "Unit 5",
+    "city": "Portland",
+    "state": "OR",
+    "country": "USA",
+    "pincode": "97201"
+  },
+  "departmentId": 9,
+  "joiningDate": "2024-02-20",
+  "experience": 5
+}
+
+
+{
+  "name": "Ava Anderson",
+  "email": "ava.anderson@example.com",
+  "age": 23,
+  "password": "myP@ssword1",
+  "role": "Developer",
+  "address": {
+    "address_line_1": "707 Willow Court",
+    "address_line_2": "Apt 8",
+    "city": "San Diego",
+    "state": "CA",
+    "country": "USA",
+    "pincode": "92101"
+  },
+  "departmentId": 10,
+  "joiningDate": "2024-03-15",
+  "experience": 1
+}
+

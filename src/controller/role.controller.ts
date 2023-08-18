@@ -1,0 +1,24 @@
+import { Request, Response, Router } from "express";
+import RoleService from "../service/role.service";
+import ResponseBody from "../utils/response.body";
+import { StatusMessages } from "../utils/status.message.enum";
+import { StatusCodes } from "../utils/status.code.enum";
+
+class RoleController{
+    public router: Router;
+    constructor(
+        private roleService : RoleService
+    ){
+        this.router = Router();
+        this.router.get("/", this.getAllRoles);
+    }
+
+    getAllRoles = async (req: Request, res: Response) => {
+        const roles =  this.roleService.getRoles();
+        const responseBody = new ResponseBody(roles, null, StatusMessages.OK);
+        responseBody.set_meta(roles.length);
+        res.status(StatusCodes.OK).send(responseBody);
+    }
+}
+
+export default RoleController;
