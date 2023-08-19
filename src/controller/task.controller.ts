@@ -26,7 +26,6 @@ class TaskController {
         try {
             const id = req.params.id;
             const task = await this.taskService.getTaskById(id);
-            console.log(task);
             const responseBody = new ResponseBody(task, null, StatusMessages.OK);
             responseBody.set_meta(1);
             res.status(StatusCodes.OK).send(responseBody);
