@@ -6,10 +6,7 @@ class TaskRepository {
 
     createTask(task:Task):Promise<Task>{
         return this.repository.save(task);
-
-    findTasks() : Promise<Task[]>{
-        return this.repository.find();
-    }
+}
 
     findTaskById(id) : Promise<Task>{
         return this.repository.findOne({
@@ -21,7 +18,10 @@ class TaskRepository {
                 taskcomments:true
             }
         })
+}
 
+    removeTask(task: Task): Task | PromiseLike<Task> {
+        return this.repository.softRemove(task);
     }
 }
 
