@@ -24,11 +24,11 @@ export default class Task extends AbstractEntity {
 
     @ManyToMany(() => Employee, (employee) => employee.tasks )
     @JoinTable()
-    employees: Employee;
+    employees: Employee[];
 
 
     @Column({type:'date'})
-    deadline:string;
+    deadline:Date;
 
     @Column()
     maxParticipants:number;
@@ -57,6 +57,6 @@ export default class Task extends AbstractEntity {
 
 
     @OneToMany(() => TaskComments, (taskComment) => taskComment.task)
-    taskcomments: TaskComments[];
+    comments: TaskComments[];
 
 }
