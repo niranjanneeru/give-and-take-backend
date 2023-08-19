@@ -102,7 +102,7 @@ class EmployeeController {
     }
 
     removeEmployee = async (req: RequestWithLogger, res: Response, next: NextFunction) => {
-        let employeeId = req.params.id;
+        const employeeId = req.params.id;
         try {
             const employee = await this.employeeService.removeEmployee(employeeId);
             res.status(StatusCodes.NO_CONTENT).send();
