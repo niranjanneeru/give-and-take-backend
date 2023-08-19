@@ -3,6 +3,8 @@ import CommentService from "../service/comment.service";
 import { StatusMessages } from "../utils/status.message.enum";
 import ResponseBody from "../utils/response.body";
 import { StatusCodes } from "../utils/status.code.enum";
+import RequestWithLogger from "../utils/request.logger";
+import Logger from "../logger/logger.singleton";
 
 export default class CommentController {
     public router: Router;
@@ -39,6 +41,25 @@ export default class CommentController {
             res.status(StatusCodes.OK).send(responseBody);
         } catch (error) {
             next(error);
+        }
+    };
+
+    removeComment = async (
+        req: RequestWithLogger,
+        res: Response,
+        next: NextFunction
+    ) => {
+        const commentId = +req.params.id;
+        try {
+            const comment = await this.commentService.removeComment(commentId);
+            Logger.getLogger().log({
+                level: "info",
+                message: `Comment Deleted (${commentId})`,
+                label: req.req_id,
+            });
+            res.status(StatusCodes.NO_CONTENT).send();
+        } catch (err) {
+            next(err);
         }
     };
 }

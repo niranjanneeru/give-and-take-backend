@@ -13,4 +13,8 @@ export default class CommentRepository {
             where: { id },
         });
     }
+
+    removeComment(comment: Comment): Comment | PromiseLike<Comment> {
+        return this.repository.softRemove(comment);
+    }
 }
