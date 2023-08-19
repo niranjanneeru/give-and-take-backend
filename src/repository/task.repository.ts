@@ -4,21 +4,21 @@ import Task from "../entity/task.entity";
 class TaskRepository {
     constructor(private repository: Repository<Task>) {}
 
-    findTasks(): Promise<Task[]> {
-        return this.repository.find();
-    }
+    createTask(task:Task):Promise<Task>{
+        return this.repository.save(task);
+}
 
-    findTaskById(id: string): Promise<Task> {
+    findTaskById(id) : Promise<Task>{
         return this.repository.findOne({
-            where: { id },
-            relations: {
+            where: {id},
+            relations:{
                 employees: true,
-                createdBy: true,
-                approvedBy: true,
-                taskcomments: true,
-            },
-        });
-    }
+                createdBy:true,
+                approvedBy:true,
+                taskcomments:true
+            }
+        })
+}
 
     removeTask(task: Task): Task | PromiseLike<Task> {
         return this.repository.softRemove(task);
