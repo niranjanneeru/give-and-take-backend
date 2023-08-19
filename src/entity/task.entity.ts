@@ -7,7 +7,7 @@ import { Role } from '../utils/role.enum';
 import { Exclude, instanceToPlain } from 'class-transformer';
 import { Status } from '../utils/status.enum';
 import { TaskStatus } from '../utils/taskStatus.enum';
-import TaskComments from './taskComments.entity';
+import Comment from './comment.entity';
 
 @Entity()
 export default class Task extends AbstractEntity {
@@ -24,11 +24,11 @@ export default class Task extends AbstractEntity {
 
     @ManyToMany(() => Employee, (employee) => employee.tasks )
     @JoinTable()
-    employees: Employee;
+    employees: Employee[];
 
 
     @Column({type:'date'})
-    deadline:string;
+    deadline:Date;
 
     @Column()
     maxParticipants:number;
@@ -56,7 +56,7 @@ export default class Task extends AbstractEntity {
     approvedBy:Employee
 
 
-    @OneToMany(() => TaskComments, (taskComment) => taskComment.task)
-    taskcomments: TaskComments[];
+    @OneToMany(() => Comment, (comment) => comment.task)
+    comments: Comment[];
 
 }
