@@ -22,7 +22,7 @@ export default class Task extends AbstractEntity {
     description: string;
 
 
-    @ManyToMany(() => Employee, (employee) => employee.tasks )
+    @ManyToMany(() => Employee, (employee) => employee.tasks, { cascade: ["update"]})
     @JoinTable()
     employees: Employee[];
 

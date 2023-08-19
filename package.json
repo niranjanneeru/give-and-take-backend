@@ -30,6 +30,7 @@
         "express": "^4.17.1",
         "jest-when": "^3.5.2",
         "jsonwebtoken": "^9.0.1",
+        "package.json": "^2.0.1",
         "pg": "^8.11.2",
         "reflect-metadata": "^0.1.13",
         "typeorm": "^0.3.17",

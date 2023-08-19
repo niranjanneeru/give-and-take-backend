@@ -2,13 +2,12 @@
 import CreateTaskDto from "../dto/create-task.dto";
 import Task from "../entity/task.entity";
 import TaskRepository from "../repository/task.repository";
-import jwt from 'jsonwebtoken'
-import jwtPayload from "../utils/jwt.payload.type";
 import EmployeeService from "./employee.service";
 import { TaskStatus } from "../utils/taskStatus.enum";
+import setTaskDto from "../dto/patch-task.dto";
 import HttpException from "../exception/http.exception";
-import TaskRepository from "../repository/task.repository";
 import { StatusCodes } from "../utils/status.code.enum";
+import { Status } from "../utils/status.enum";
 
 class TaskService {
     constructor(private taskRepository: TaskRepository,private employeeService:EmployeeService) {}
@@ -22,8 +21,9 @@ class TaskService {
         if(!task){
             throw new HttpException(StatusCodes.NOT_FOUND, `Task with id ${id} not found`);
         }
+        return task;
 
-
+    }
     async createTask(createTaskDto: CreateTaskDto,email:string): Promise<Task> {
         const task = new Task();
         task.title = createTaskDto.title;
@@ -42,6 +42,55 @@ class TaskService {
         return this.taskRepository.createTask(task);
         return task;
     }
+
+    editTask = async(id: string, taskDto: setTaskDto, email: string): Promise<Task> => {
+
+        const task = await this.taskRepository.findTaskById(id);
+        const emp = await this.employeeService.getEmployeeByEmail(email);
+
+        if(!task){
+            throw new HttpException(404, `Task with id ${id} not found`);
+        }
+
+        let keys = Object.getOwnPropertyNames(taskDto);
+        keys.forEach(key => {
+            console.log("key", key);
+            if( key == 'status' ){
+                task[key] = taskDto[key];
+                task['approvedBy'] = emp
+                task.employees.forEach(emp => emp.bounty+=task.bounty/task.employees.length )
+            }
+            else{
+                task[key] = taskDto[key];
+            }  
+        });
+        return this.taskRepository.updateTask(task);
+    }
+
+   addAssigneesToTask = async ( taskId: string, assigneeId : string) :  Promise<Task> => {
+        const task = await this.taskRepository.findTaskById(taskId);
+        const emp = await this.employeeService.getEmployeeByID(assigneeId)
+
+        if(!task && !emp){
+            throw new HttpException(404, `Task or Employee not found`);
+        }
+
+        return this.taskRepository.addAssigneesToTask(task,emp);
+   }
+
+    removeAssigneesFromTask = async ( taskId: string, assigneeId : string) :  Promise<Task> => {
+        const task = await this.taskRepository.findTaskById(taskId);
+        const emp = await this.employeeService.getEmployeeByID(assigneeId)
+
+        if(!task && !emp){
+            throw new HttpException(404, `Task or Employee not found`);
+        }
+
+        return this.taskRepository.removeAssigneesFromTask(task,emp);
+   }
+
+    
+
 }
 
 export default TaskService;

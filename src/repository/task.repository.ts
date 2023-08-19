@@ -1,12 +1,13 @@
 import { Repository } from "typeorm/repository/Repository";
 import Task from "../entity/task.entity";
+import Employee from "../entity/employee.entity";
 
 class TaskRepository {
     constructor(private repository: Repository<Task>) {}
 
     createTask(task:Task):Promise<Task>{
         return this.repository.save(task);
-
+    }
     findTasks() : Promise<Task[]>{
         return this.repository.find();
     }
@@ -18,11 +19,25 @@ class TaskRepository {
                 employees: true,
                 createdBy:true,
                 approvedBy:true,
-                taskcomments:true
+                comments:true
             }
         })
 
     }
+    updateTask(task: Task): Promise<Task>{
+        return this.repository.save(task);
+    }
+
+    addAssigneesToTask ( task: Task, emp: Employee) : Promise<Task> {
+        task.employees.push(emp);
+        return this.repository.save(task);
+    }
+
+    removeAssigneesFromTask ( task: Task, emp: Employee) : Promise<Task> {
+        task.employees = task.employees.filter(e => e.id != emp.id)
+        return this.repository.save(task);
+    }
+
 }
 
 export default TaskRepository;
