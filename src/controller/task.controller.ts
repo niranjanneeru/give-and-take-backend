@@ -15,7 +15,7 @@ class TaskController {
 
         this.router.get("/", authenticate, this.getAllTasks);
         this.router.get("/:id", authenticate, this.getTaskById);
-        this.router.delete("/:id", this.removeTask);
+        this.router.delete("/:id", authenticate, this.removeTask);
     }
 
     getAllTasks = async (req: Request, res: Response) => {
@@ -54,6 +54,7 @@ class TaskController {
                 message: `Task Deleted (${taskId})`,
                 label: req.req_id,
             });
+            res.status(StatusCodes.NO_CONTENT).send();
         } catch (err) {
             next(err);
         }
