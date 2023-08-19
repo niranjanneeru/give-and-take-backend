@@ -6,7 +6,7 @@ import { Role } from '../utils/role.enum';
 import { Exclude, instanceToPlain } from 'class-transformer';
 import { Status } from '../utils/status.enum';
 import Task from './task.entity';
-import TaskComments from './taskComments.entity';
+import TaskComments from './comment.entity';
 
 @Entity()
 @Index(["email"], { unique: true })
