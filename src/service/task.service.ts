@@ -47,7 +47,6 @@ class TaskService {
         task.createdBy = emp;
 
         return this.taskRepository.createTask(task);
-        return task;
     }
 
     removeTask = async (id: string): Promise<Task | null> => {

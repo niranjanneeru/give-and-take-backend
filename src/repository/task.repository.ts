@@ -12,6 +12,7 @@ class TaskRepository {
         return this.repository.find();
     }
 
+    // Todo update using query builder to get all the comments as well
     findTaskById(id): Promise<Task> {
         return this.repository.findOne({
             where: { id },

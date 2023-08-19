@@ -15,7 +15,8 @@ import AbstractEntity from "./abstract.enitiy";
 import Task from "./task.entity";
 
 @Entity()
-class Comment extends AbstractEntity {
+class Comment extends AbstractEntity{
+
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -32,5 +33,6 @@ class Comment extends AbstractEntity {
     @JoinColumn({ name: "postedBy" })
     postedBy: Employee;
 }
+
 
 export default Comment;

@@ -1,15 +1,18 @@
+import Comment from "../entity/comment.entity";
 import dataSource from "../db/postgres.db";
-import Task from "../entity/task.entity";
-import TaskRepository from "../repository/task.repository";
-import TaskService from "../service/task.service";
-import TaskController from "../controller/task.controller";
 import CommentRepository from "../repository/comment.repository";
 import CommentService from "../service/comment.service";
 import CommentController from "../controller/comment.controller";
-
-
-const commentRepository = new CommentRepository(dataSource.getRepository(Comment));
-const commentService = new CommentService(commentRepository);
+import { employeeService } from "./employee.route";
+import { taskService } from "./task.route";
+const commentRepository = new CommentRepository(
+    dataSource.getRepository(Comment)
+);
+const commentService = new CommentService(
+    commentRepository,
+    employeeService,
+    taskService
+);
 const commentRoute = new CommentController(commentService).router;
 
 export default commentRoute;
