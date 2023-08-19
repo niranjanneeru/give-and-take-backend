@@ -38,6 +38,12 @@ class TaskRepository {
         return this.repository.save(task);
     }
 
+
+
+    removeTask(task: Task): Task | PromiseLike<Task> {
+        return this.repository.softRemove(task);
+    }
+
 }
 
 export default TaskRepository;

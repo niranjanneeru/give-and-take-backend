@@ -1,4 +1,3 @@
-
 import CreateTaskDto from "../dto/create-task.dto";
 import Task from "../entity/task.entity";
 import EmployeeRepository from "../repository/employee.repository";
@@ -89,9 +88,19 @@ class TaskService {
 
         return this.taskRepository.removeAssigneesFromTask(task,emp);
    }
+  
+   removeTask = async (id: string): Promise<Task | null> => {
+        const task = await this.taskRepository.findTaskById(id);
+        if (!task) {
+            throw new HttpException(
+                StatusCodes.NOT_FOUND,
+                `Task with id ${id} not found`
+            );
+        }
+        return this.taskRepository.removeTask(task);
+    };
 
-    
-
+   
 }
 
 export default TaskService;

@@ -10,6 +10,8 @@ import Logger from "../logger/logger.singleton";
 import authenticate from "../middleware/authenticate.middleware";
 import setTaskDto from "../dto/patch-task.dto";
 
+
+
 class TaskController {
     public router: Router;
 
@@ -21,6 +23,7 @@ class TaskController {
         this.router.delete("/:taskId/assignees/:assigneeId", authenticate, this.removeAssigneesFromTask);
         this.router.post("/",authenticate,validateMiddleware(CreateTaskDto),this.createTask);
         this.router.patch("/:id", authenticate, validateMiddleware(setTaskDto, { skipMissingProperties: true }), this.setTask)
+        this.router.delete("/:id", authenticate, this.removeTask);
     }
 
     createTask = async (req: RequestWithLogger, res: Response, next) => {
@@ -90,6 +93,25 @@ class TaskController {
         responseBody.set_meta(1);
         res.status(StatusCodes.OK).send(responseBody);
     }
+
+    removeTask = async (
+        req: RequestWithLogger,
+        res: Response,
+        next: NextFunction
+    ) => {
+        const taskId = req.params.id;
+        try {
+            const task = await this.taskService.removeTask(taskId);
+            Logger.getLogger().log({
+                level: "info",
+                message: `Task Deleted (${taskId})`,
+                label: req.req_id,
+            });
+            res.status(StatusCodes.NO_CONTENT).send();
+        } catch (err) {
+            next(err);
+        }
+    };
 }
 
 export default TaskController;
