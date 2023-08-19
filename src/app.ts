@@ -13,6 +13,7 @@ import monitor from "./middleware/monitor.middleware";
 import statusRoute from "./route/status.route";
 import cors from "cors";
 import taskRoute from "./route/task.route";
+import commentRoute from "./route/comment.route";
 
 const server = express();
 
@@ -29,6 +30,7 @@ server.use("/api/departments", departmentRoute);
 server.use("/api/roles", roleRoute);
 server.use("/api/status", statusRoute);
 server.use("/api/tasks", taskRoute);
+server.use("/api/comments", commentRoute);
 
 server.all("*", (req: Request, res: Response) => {
     res.status(404).send();
