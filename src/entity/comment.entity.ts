@@ -4,7 +4,7 @@ import AbstractEntity from "./abstract.enitiy";
 import Task from "./task.entity";
 
 @Entity()
-class TaskComments extends AbstractEntity{
+class Comment extends AbstractEntity{
 
     @PrimaryGeneratedColumn()
     id: number;
@@ -15,7 +15,7 @@ class TaskComments extends AbstractEntity{
     @Column()
     url: string;
 
-    @ManyToOne(() => Task, (task) => task.taskcomments)
+    @ManyToOne(() => Task, (task) => task.comments)
     task: Task;
 
     @ManyToOne(()=>Employee,(employee)=>employee.comments)
@@ -24,4 +24,4 @@ class TaskComments extends AbstractEntity{
 }
 
 
-export default TaskComments;
+export default Comment;

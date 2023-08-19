@@ -1,3 +1,12 @@
+import Address from './address.entity';
+import Department from './department.entity';
+import Employee from './employee.entity';
+import AbstractEntity from './abstract.enitiy';
+import { Role } from '../utils/role.enum';
+import { Exclude, instanceToPlain } from 'class-transformer';
+import { Status } from '../utils/status.enum';
+import { TaskStatus } from '../utils/taskStatus.enum';
+import Comment from './comment.entity';
 import {
     Column,
     Entity,
@@ -13,15 +22,6 @@ import {
     RelationId,
     Timestamp,
 } from "typeorm";
-import Address from "./address.entity";
-import Department from "./department.entity";
-import Employee from "./employee.entity";
-import AbstractEntity from "./abstract.enitiy";
-import { Role } from "../utils/role.enum";
-import { Exclude, instanceToPlain } from "class-transformer";
-import { Status } from "../utils/status.enum";
-import { TaskStatus } from "../utils/taskStatus.enum";
-import TaskComments from "./taskComments.entity";
 
 @Entity()
 export default class Task extends AbstractEntity {
@@ -34,14 +34,15 @@ export default class Task extends AbstractEntity {
     @Column()
     description: string;
 
-    @ManyToMany(() => Employee, (employee) => employee.tasks)
+    @ManyToMany(() => Employee, (employee) => employee.tasks, { cascade: ["update"]})
     @JoinTable()
     employees: Employee[];
 
-    @Column({ type: "date" })
-    deadline: string;
 
-    @Column()
+    @Column({type:'date'})
+    deadline:Date;
+
+   @Column()
     maxParticipants: number;
 
     @Column({ default: TaskStatus.CREATED })
@@ -64,6 +65,8 @@ export default class Task extends AbstractEntity {
     @JoinColumn({ name: "approvedBy" })
     approvedBy: Employee;
 
-    @OneToMany(() => TaskComments, (taskComment) => taskComment.task)
-    taskcomments: TaskComments[];
+    @OneToMany(() => Comment, (comment) => comment.task)
+    comments: Comment[];
+
+
 }
