@@ -1,4 +1,4 @@
-import { Request, Response, Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 import TaskService from "../service/task.service";
 import validateMiddleware from "../middleware/validate.middleware";
 import CreateTaskDto from "../dto/create-task.dto";
@@ -9,12 +9,14 @@ import { StatusCodes } from "../utils/status.code.enum";
 import Logger from "../logger/logger.singleton";
 import authenticate from "../middleware/authenticate.middleware";
 
+
 class TaskController {
     public router: Router;
 
     constructor(private taskService: TaskService) {
         this.router = Router();
-
+        this.router.get("/", authenticate, this.getAllTasks);
+        this.router.get("/:id", authenticate, this.getTaskById);
         this.router.post("/",authenticate,validateMiddleware(CreateTaskDto),this.createTask);
     }
 
@@ -29,6 +31,27 @@ class TaskController {
             next(err);
         }
     }
+
+    getAllTasks = async (req: Request, res: Response) => {
+        const tasks = await this.taskService.getTasks();
+        const responseBody = new ResponseBody(tasks, null, StatusMessages.OK);
+        responseBody.set_meta(tasks.length);
+        res.status(StatusCodes.OK).send(responseBody);
+    }
+
+    getTaskById = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const id = req.params.id;
+            const task = await this.taskService.getTaskById(id);
+            const responseBody = new ResponseBody(task, null, StatusMessages.OK);
+            responseBody.set_meta(1);
+            res.status(StatusCodes.OK).send(responseBody);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+
 }
 
 export default TaskController;

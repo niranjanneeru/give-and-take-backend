@@ -6,6 +6,22 @@ class TaskRepository {
 
     createTask(task:Task):Promise<Task>{
         return this.repository.save(task);
+
+    findTasks() : Promise<Task[]>{
+        return this.repository.find();
+    }
+
+    findTaskById(id) : Promise<Task>{
+        return this.repository.findOne({
+            where: {id},
+            relations:{
+                employees: true,
+                createdBy:true,
+                approvedBy:true,
+                taskcomments:true
+            }
+        })
+
     }
 }
 
