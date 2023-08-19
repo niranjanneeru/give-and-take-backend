@@ -1,4 +1,4 @@
-import TaskRepository from "../repository/tasks.repository";
+import TaskRepository from "../repository/task.repository";
 
 class TaskService {
     constructor(private service: TaskRepository) {}

@@ -1,6 +1,6 @@
 import dataSource from "../db/postgres.db";
 import Task from "../entity/task.entity";
-import TaskRepository from "../repository/tasks.repository";
+import TaskRepository from "../repository/task.repository";
 import TaskService from "../service/task.service";
 import TaskController from "../controller/task.controller";
 
