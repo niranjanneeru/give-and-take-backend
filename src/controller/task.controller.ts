@@ -7,6 +7,7 @@ import { StatusCodes } from "../utils/status.code.enum";
 import RequestWithLogger from "../utils/request.logger";
 import Logger from "../logger/logger.singleton";
 
+
 class TaskController {
     public router: Router;
 
