@@ -12,17 +12,13 @@ class TaskRepository {
         return this.repository.find();
     }
 
-    // Todo update using query builder to get all the comments as well
     findTaskById(id): Promise<Task> {
-        return this.repository.findOne({
-            where: { id },
-            relations: {
-                employees: true,
-                createdBy: true,
-                approvedBy: true,
-                comments: true,
-            },
-        });
+        return this.repository.createQueryBuilder('task')
+            .leftJoinAndSelect('task.comments', 'comment')
+            .leftJoinAndSelect('comment.postedBy', 'employee')
+            .orderBy('comment.createdAt')
+            .where({id})
+            .getOne()
     }
 
     removeTask(task: Task): Task | PromiseLike<Task> {
