@@ -8,6 +8,7 @@ import setTaskDto from "../dto/patch-task.dto";
 import HttpException from "../exception/http.exception";
 import { StatusCodes } from "../utils/status.code.enum";
 import { Status } from "../utils/status.enum";
+import DirectBountyDto from "../dto/direct-bounty.dto";
 
 class TaskService {
     constructor(private taskRepository: TaskRepository,private employeeService:EmployeeService) {}
@@ -40,7 +41,6 @@ class TaskService {
 
 
         return this.taskRepository.createTask(task);
-        return task;
     }
 
     editTask = async(id: string, taskDto: setTaskDto, email: string): Promise<Task> => {
@@ -99,6 +99,29 @@ class TaskService {
         }
         return this.taskRepository.removeTask(task);
     };
+
+    async createDirectBounty(directBountyDto: DirectBountyDto,email:string,employeeId:string): Promise<Task> {
+        const task = new Task();
+        task.title = directBountyDto.reason;
+        task.description = directBountyDto.reason;
+        task.deadline = new Date();
+        task.maxParticipants = 1;
+        task.isDirectBounty = true;
+        task.status = TaskStatus.COMPLETED;
+        task.bounty = directBountyDto.bounty;
+        task.skills = directBountyDto.reason;
+
+        const emp=await this.employeeService.getEmployeeByEmail(email);
+        task.createdBy=emp;
+        task.approvedBy=emp;
+
+        const recepient=await this.employeeService.getEmployeeByID(employeeId);
+        task.employees=[recepient];
+        task.employees[0].bounty+=task.bounty;
+
+
+        return this.taskRepository.createTask(task);
+    }
 
    
 }
