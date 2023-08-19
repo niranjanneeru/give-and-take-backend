@@ -34,11 +34,6 @@ class setTaskDto {
     @IsString()
     skills: string;
 
-
-    employees: Employee;
-
-    approvedBy:Employee
-
 }
 
 export default setTaskDto

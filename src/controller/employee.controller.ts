@@ -23,7 +23,7 @@ class EmployeeController {
 
         this.router.get("/", authenticate, this.getAllEmployees);
         this.router.get("/me", authenticate, this.getLoggedEmployee);
-        this.router.post("/", authenticate, authorize(Role.HR, Role.MANAGER), validateMiddleware(CreateEmployeeDto), this.createEmployee);
+        this.router.post("/", validateMiddleware(CreateEmployeeDto), this.createEmployee);
         this.router.get("/:id", authenticate, this.getEmployeeById);
         this.router.put("/:id", authenticate, validateMiddleware(EditEmployeeDto), this.editEmployee);
         this.router.patch("/:id", authenticate, validateMiddleware(SetEmployeeDto, { skipMissingProperties: true }), this.setFieldEmployee);

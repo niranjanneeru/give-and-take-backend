@@ -1,6 +1,7 @@
 
 import CreateTaskDto from "../dto/create-task.dto";
 import Task from "../entity/task.entity";
+import EmployeeRepository from "../repository/employee.repository";
 import TaskRepository from "../repository/task.repository";
 import EmployeeService from "./employee.service";
 import { TaskStatus } from "../utils/taskStatus.enum";

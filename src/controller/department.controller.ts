@@ -22,7 +22,7 @@ class DepartmentController {
         this.router = Router();
 
         this.router.get("/", this.getAllDepartments)
-        this.router.post("/", authenticate, authorize(Role.HR), validateMiddleware(CreateDepartmentDto), this.createDepartment);
+        this.router.post("/",  validateMiddleware(CreateDepartmentDto), this.createDepartment);
         this.router.get("/:id", this.getDepartmentById);
         this.router.put("/:id", authenticate, authorize(Role.HR), validateMiddleware(EditDepartmentDto), this.editDepartment);
         this.router.patch("/:id", authenticate, authorize(Role.HR), validateMiddleware(PatchDepartmentDto, { skipMissingProperties: true }), this.setDepartment);
