@@ -1,3 +1,4 @@
+import Task from "../entity/task.entity";
 import HttpException from "../exception/http.exception";
 import TaskRepository from "../repository/task.repository";
 import { StatusCodes } from "../utils/status.code.enum";
@@ -5,17 +6,31 @@ import { StatusCodes } from "../utils/status.code.enum";
 class TaskService {
     constructor(private taskRepository: TaskRepository) {}
 
-    getTasks(){
+    getTasks() {
         return this.taskRepository.findTasks();
     }
 
-    async getTaskById(id: string){
+    async getTaskById(id: string) {
         const task = await this.taskRepository.findTaskById(id);
-        if(!task){
-            throw new HttpException(StatusCodes.NOT_FOUND, `Task with id ${id} not found`);
+        if (!task) {
+            throw new HttpException(
+                StatusCodes.NOT_FOUND,
+                `Task with id ${id} not found`
+            );
         }
         return task;
     }
+
+    removeTask = async (id: string): Promise<Task | null> => {
+        const task = await this.taskRepository.findTaskById(id);
+        if (!task) {
+            throw new HttpException(
+                StatusCodes.NOT_FOUND,
+                `Task with id ${id} not found`
+            );
+        }
+        return this.taskRepository.removeTask(task);
+    };
 }
 
 export default TaskService;
