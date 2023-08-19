@@ -1,0 +1,6 @@
+export enum TaskStatus {
+    CREATED = "UI",
+    IN_PROGRESS = "DEVELOPER",
+    COMPLETED="COMPLETED",
+    REQUEST_CHANGE="REQUEST_CHANGE"
+}
