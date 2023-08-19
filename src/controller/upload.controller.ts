@@ -15,6 +15,7 @@ export class UploadController {
     constructor(
     ) {
         this.router = Router();
+
         this.router.post('/', this.upload);
         this.router.get('/:filename', this.getFile);
     }
@@ -40,7 +41,7 @@ export class UploadController {
                 throw new ValidationException(StatusCodes.BAD_REQUEST, "No File Provided", []);
             }
 
-            const responseBody = new ResponseBody({"url": `http:localhost:8000/upload/${req.file.filename}`}, null, StatusMessages.CREATED);
+            const responseBody = new ResponseBody({"url": `${process.env.SITE_URL}/uploads/${req.file.filename}`}, null, StatusMessages.CREATED);
             responseBody.set_meta(1);
 
             res.status(StatusCodes.CREATED).send(responseBody);

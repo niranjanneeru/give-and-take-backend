@@ -30,7 +30,7 @@ server.use("/api/departments", departmentRoute);
 server.use("/api/roles", roleRoute);
 server.use("/api/status", statusRoute);
 server.use("/api/tasks", taskRoute);
-server.use("/upload", uploadRoute);
+server.use("/uploads", uploadRoute);
 
 server.all("*", (req: Request, res: Response) => {
     res.status(404).send();
