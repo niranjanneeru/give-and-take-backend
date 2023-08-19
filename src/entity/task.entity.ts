@@ -35,7 +35,7 @@ export default class Task extends AbstractEntity {
 
 
     @Column({ default: TaskStatus.CREATED })
-    taskStatus: TaskStatus;
+    status: TaskStatus;
 
     @Column({default:0})
     bounty:number;
