@@ -8,7 +8,7 @@ import loggerMiddleware from "./middleware/logger.middleware";
 import employeeRoute from "./route/employee.route";
 import errorMiddleware from "./middleware/error.middleware";
 import { departmentRoute } from "./route/department.route";
-import roleRoute from "./route/role.route";
+import {roleRoute} from "./route/role.route";
 import monitor from "./middleware/monitor.middleware";
 import statusRoute from "./route/status.route";
 import cors from "cors";

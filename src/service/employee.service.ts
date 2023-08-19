@@ -53,7 +53,7 @@ class EmployeeService {
         employee.name = employeeDta.name;
         employee.email = employeeDta.email;
         employee.password = await bcrypt.hash(employeeDta.password, +process.env.PASSWORD_HASH_ROUND);
-        employee.role = employeeDta.role;
+        // employee.role = employeeDta.role;
         employee.experience = employeeDta.experience;
         employee.joiningDate = employeeDta.joiningDate;
 
@@ -133,7 +133,7 @@ class EmployeeService {
         const payload: jwtPayload = {
             name: employee.name,
             email: employee.email,
-            role: employee.role
+            role: employee.role.name
         }
 
         const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {

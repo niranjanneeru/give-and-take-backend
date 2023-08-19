@@ -14,6 +14,7 @@ import RequestWithLogger from "../utils/request.logger";
 import Logger from "../logger/logger.singleton";
 import validateMiddleware from "../middleware/validate.middleware";
 import RequestWithUser from "../utils/request.user";
+import { Permission } from "../utils/permission.enum";
 
 class EmployeeController {
     public router: Router;
@@ -23,11 +24,11 @@ class EmployeeController {
 
         this.router.get("/", authenticate, this.getAllEmployees);
         this.router.get("/me", authenticate, this.getLoggedEmployee);
-        this.router.post("/", authenticate, authorize(Role.HR, Role.MANAGER), validateMiddleware(CreateEmployeeDto), this.createEmployee);
+        this.router.post("/", authenticate, authorize(Permission.EMPLOYEE_CREATE), validateMiddleware(CreateEmployeeDto), this.createEmployee);
         this.router.get("/:id", authenticate, this.getEmployeeById);
-        this.router.put("/:id", authenticate, validateMiddleware(EditEmployeeDto), this.editEmployee);
-        this.router.patch("/:id", authenticate, validateMiddleware(SetEmployeeDto, { skipMissingProperties: true }), this.setFieldEmployee);
-        this.router.delete("/:id", authenticate, authorize(Role.HR), this.removeEmployee);
+        this.router.put("/:id", authenticate, authorize(Permission.EMPLOYEE_EDIT), validateMiddleware(EditEmployeeDto), this.editEmployee);
+        this.router.patch("/:id", authenticate, authorize(Permission.EMPLOYEE_EDIT), validateMiddleware(SetEmployeeDto, { skipMissingProperties: true }), this.setFieldEmployee);
+        this.router.delete("/:id", authenticate,  authorize(Permission.EMPLOYEE_DELETE), this.removeEmployee);
         this.router.post("/login", validateMiddleware(LoginEmployeeDto, { forbidUnknownValues: false }), this.loginEmployee);
     }
 

@@ -1,17 +1,29 @@
 import { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
 import RequestWithUser from "../utils/request.user";
-import { Role } from "../utils/role.enum";
 import HttpException from "../exception/http.exception";
 import { StatusCodes } from "../utils/status.code.enum";
+import { roleService } from "../route/role.route";
 
-const authorize = function (...roles: Role[]) {
+const authorize = function (...permissions: string[]) {
     return async (req: RequestWithUser, res: Response, next: NextFunction) => {
         try {
-            const role = req.role;
-            if (roles.indexOf(role) === -1) {
+            const role_name = req.role;
+            if(!role_name){
                 throw new HttpException(StatusCodes.FORBIDDEN, "Forbidden Action");
             }
+
+            const role = await roleService.getRoleByName(role_name);
+            if(!role){
+                throw new HttpException(StatusCodes.FORBIDDEN, "Forbidden Action");
+            }
+
+            const role_permissions = role.permissions.map((permission) => permission.name)
+
+            permissions.map((permission) => {
+                if(role_permissions.indexOf(permission) === -1){
+                    throw new HttpException(StatusCodes.FORBIDDEN, "Forbidden Action");   
+                }
+            })
             next();
         } catch (err) {
             next(err);

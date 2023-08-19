@@ -2,9 +2,9 @@ import { Column, Entity, Index, ManyToOne, OneToOne, PrimaryColumn, PrimaryGener
 import Address from './address.entity';
 import Department from './department.entity';
 import AbstractEntity from './abstract.enitiy';
-import { Role } from '../utils/role.enum';
 import { Exclude, instanceToPlain } from 'class-transformer';
 import { Status } from '../utils/status.enum';
+import Role from './role.entity';
 
 @Entity()
 @Index(["email"], { unique: true })
@@ -37,7 +37,7 @@ export default class Employee extends AbstractEntity {
     @Exclude({ toPlainOnly: true })
     password: string;
 
-    @Column({ default: Role.DEVELOPER })
+    @ManyToOne(() => Role, (role) => role.employees)
     role: Role;
 
     @Column()
