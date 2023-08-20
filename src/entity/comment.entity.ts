@@ -1,15 +1,4 @@
-import {
-    Column,
-    CreateDateColumn,
-    DeleteDateColumn,
-    Entity,
-    JoinColumn,
-    OneToMany,
-    OneToOne,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn,
-    ManyToOne,
-} from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne } from "typeorm";
 import Employee from "./employee.entity";
 import AbstractEntity from "./abstract.enitiy";
 import Task from "./task.entity";
@@ -33,6 +22,7 @@ class Comment extends AbstractEntity{
     @JoinColumn({ name: "postedBy" })
     postedBy: Employee;
 }
+
 
 
 export default Comment;

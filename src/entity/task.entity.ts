@@ -1,5 +1,3 @@
-
-import { Column, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn, RelationId, Timestamp } from 'typeorm'
 import Address from './address.entity';
 import Department from './department.entity';
 import Employee from './employee.entity';
@@ -10,8 +8,21 @@ import { Status } from '../utils/status.enum';
 import { TaskStatus } from '../utils/taskStatus.enum';
 import Comment from './comment.entity';
 
-
-
+import {
+    Column,
+    Entity,
+    Index,
+    JoinColumn,
+    JoinTable,
+    ManyToMany,
+    ManyToOne,
+    OneToMany,
+    OneToOne,
+    PrimaryColumn,
+    PrimaryGeneratedColumn,
+    RelationId,
+    Timestamp,
+} from "typeorm";
 
 @Entity()
 export default class Task extends AbstractEntity {
@@ -24,16 +35,15 @@ export default class Task extends AbstractEntity {
     @Column()
     description: string;
 
-    @ManyToMany(() => Employee, (employee) => employee.tasks)
+    @ManyToMany(() => Employee, (employee) => employee.tasks, { cascade: ["update"]})
     @JoinTable()
     employees: Employee[];
-
+  
 
     @Column({type:'date'})
     deadline:Date;
 
-
-    @Column()
+   @Column()
     maxParticipants: number;
 
     @Column({ default: TaskStatus.CREATED })

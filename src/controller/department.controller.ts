@@ -19,12 +19,8 @@ class DepartmentController {
     constructor(private departmentService: DepartmentService) {
         this.router = Router();
 
-        this.router.get("/", this.getAllDepartments);
-        this.router.post(
-            "/",
-            validateMiddleware(CreateDepartmentDto),
-            this.createDepartment
-        ); //  authenticate, authorize(Role.HR),
+        this.router.get("/", this.getAllDepartments)
+        this.router.post("/",  validateMiddleware(CreateDepartmentDto), this.createDepartment);
         this.router.get("/:id", this.getDepartmentById);
         this.router.put(
             "/:id",

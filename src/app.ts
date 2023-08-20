@@ -14,6 +14,7 @@ import statusRoute from "./route/status.route";
 import cors from "cors";
 import taskRoute from "./route/task.route";
 import commentRoute from "./route/comment.route";
+import uploadRoute from "./route/upload.route";
 
 const server = express();
 
@@ -31,6 +32,7 @@ server.use("/api/roles", roleRoute);
 server.use("/api/status", statusRoute);
 server.use("/api/tasks", taskRoute);
 server.use("/api/tasks/:id/comments", commentRoute);
+server.use("/uploads", uploadRoute);
 
 server.all("*", (req: Request, res: Response) => {
     res.status(404).send();
