@@ -13,7 +13,7 @@ export default class CommentController {
     public router: Router;
 
     constructor(private commentService: CommentService) {
-        this.router = Router();
+        this.router = Router({mergeParams: true});
 
         this.router.get("/", this.getAllComments);
         this.router.get("/:id", this.getCommentById);
@@ -70,6 +70,7 @@ export default class CommentController {
                 req.email,
                 req.params.id
             );
+            console.log(req.params.id);
             const responseBody = new ResponseBody(
                 comment,
                 null,

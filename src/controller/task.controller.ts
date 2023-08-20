@@ -8,8 +8,7 @@ import ResponseBody from "../utils/response.body";
 import { StatusCodes } from "../utils/status.code.enum";
 import Logger from "../logger/logger.singleton";
 import authenticate from "../middleware/authenticate.middleware";
-// TODO clean code
-import setTaskDto from "../dto/patch-task.dto";
+import SetTaskDto from "../dto/patch-task.dto";
 import DirectBountyDto from "../dto/direct-bounty.dto";
 
 
@@ -22,7 +21,7 @@ class TaskController {
         this.router.get("/", authenticate, this.getAllTasks);
         this.router.get("/:id", authenticate, this.getTaskById);
         this.router.post("/",authenticate,validateMiddleware(CreateTaskDto),this.createTask);
-        this.router.patch("/:id", authenticate, validateMiddleware(setTaskDto, { skipMissingProperties: true }), this.setTask)
+        this.router.patch("/:id", authenticate, validateMiddleware(SetTaskDto, { skipMissingProperties: true }), this.setTask)
         this.router.delete("/:id", authenticate, this.removeTask);
         
       

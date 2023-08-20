@@ -1,13 +1,11 @@
 import CreateTaskDto from "../dto/create-task.dto";
 import Task from "../entity/task.entity";
-import EmployeeRepository from "../repository/employee.repository";
 import TaskRepository from "../repository/task.repository";
 import EmployeeService from "./employee.service";
 import { TaskStatus } from "../utils/taskStatus.enum";
-import setTaskDto from "../dto/patch-task.dto";
+import SetTaskDto from "../dto/patch-task.dto";
 import HttpException from "../exception/http.exception";
 import { StatusCodes } from "../utils/status.code.enum";
-import { Status } from "../utils/status.enum";
 import DirectBountyDto from "../dto/direct-bounty.dto";
 
 class TaskService {
@@ -48,7 +46,7 @@ class TaskService {
         return this.taskRepository.createTask(task);
     }
 
-    editTask = async(id: string, taskDto: setTaskDto, email: string): Promise<Task> => {
+    editTask = async(id: string, taskDto: SetTaskDto, email: string): Promise<Task> => {
 
         const task = await this.taskRepository.findTaskById(id);
         const employee = await this.employeeService.getEmployeeByEmail(email);

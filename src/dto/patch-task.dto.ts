@@ -2,7 +2,7 @@ import { IsNotEmpty, IsNumber, IsPositive, IsString } from "class-validator";
 import { TaskStatus } from "../utils/taskStatus.enum";
 import Employee from "../entity/employee.entity";
 
-class setTaskDto {
+class SetTaskDto {
 
     @IsNotEmpty()
     @IsString()
@@ -36,4 +36,4 @@ class setTaskDto {
 
 }
 
-export default setTaskDto
+export default SetTaskDto

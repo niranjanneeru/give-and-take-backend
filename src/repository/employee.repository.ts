@@ -5,7 +5,6 @@ class EmployeeRepository {
     constructor(private repository: Repository<Employee>) {}
 
     find(skip, take): Promise<Employee[]> {
-        // return this.repository.find();
         return this.repository
             .createQueryBuilder("employee")
             .leftJoinAndSelect("employee.department", "department")

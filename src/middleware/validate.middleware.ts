@@ -9,7 +9,7 @@ const validateMiddleware = (cls, options = {}) => {
     return async (req: RequestWithLogger, res: Response, next: NextFunction) => {
         try {
             const dto = plainToInstance(cls, req.body);
-            const errors = await v(cls, options);
+            const errors = await v(dto, options);
             if (errors.length > 0) {
                 throw new ValidationException(StatusCodes.BAD_REQUEST, "Validation Errors", errors);
             }

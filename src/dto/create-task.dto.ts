@@ -1,4 +1,4 @@
-import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsDate, IsDateString, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { TaskStatus } from "../utils/taskStatus.enum";
 
 class CreateTaskDto{
@@ -12,7 +12,7 @@ class CreateTaskDto{
     description:string;
 
     @IsNotEmpty()
-    @IsDate()
+    @IsDateString()
     deadline:Date;
 
     @IsNotEmpty()
