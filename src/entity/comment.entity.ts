@@ -12,7 +12,7 @@ class Comment extends AbstractEntity{
     @Column()
     comment: string;
 
-    @Column()
+    @Column({nullable: true})
     url: string;
 
     @ManyToOne(() => Task, (task) => task.comments)

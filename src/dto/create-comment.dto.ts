@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsUrl } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString, IsUrl } from "class-validator";
 
 class CreateCommentDto {
     @IsNotEmpty()
@@ -6,6 +6,7 @@ class CreateCommentDto {
     comment: string;
 
     @IsNotEmpty()
+    @IsOptional()
     @IsString()
     @IsUrl()
     url: string;
