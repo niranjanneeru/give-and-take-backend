@@ -7,6 +7,7 @@ import { Exclude, instanceToPlain } from 'class-transformer';
 import { Status } from '../utils/status.enum';
 import { TaskStatus } from '../utils/taskStatus.enum';
 import Comment from './comment.entity';
+
 import {
     Column,
     Entity,
@@ -37,7 +38,7 @@ export default class Task extends AbstractEntity {
     @ManyToMany(() => Employee, (employee) => employee.tasks, { cascade: ["update"]})
     @JoinTable()
     employees: Employee[];
-
+  
 
     @Column({type:'date'})
     deadline:Date;
@@ -67,6 +68,5 @@ export default class Task extends AbstractEntity {
 
     @OneToMany(() => Comment, (comment) => comment.task)
     comments: Comment[];
-
 
 }

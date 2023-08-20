@@ -3,14 +3,14 @@ import TaskService from "../service/task.service";
 import validateMiddleware from "../middleware/validate.middleware";
 import CreateTaskDto from "../dto/create-task.dto";
 import RequestWithLogger from "../utils/request.logger";
-import ResponseBody from "../utils/response.body";
 import { StatusMessages } from "../utils/status.message.enum";
+import ResponseBody from "../utils/response.body";
 import { StatusCodes } from "../utils/status.code.enum";
 import Logger from "../logger/logger.singleton";
 import authenticate from "../middleware/authenticate.middleware";
+// TODO clean code
 import setTaskDto from "../dto/patch-task.dto";
 import DirectBountyDto from "../dto/direct-bounty.dto";
-
 
 
 class TaskController {
@@ -18,28 +18,39 @@ class TaskController {
 
     constructor(private taskService: TaskService) {
         this.router = Router();
+        
         this.router.get("/", authenticate, this.getAllTasks);
         this.router.get("/:id", authenticate, this.getTaskById);
-        this.router.patch("/:taskId/assignees/:assigneeId", authenticate, this.addAssigneesToTask);
-        this.router.delete("/:taskId/assignees/:assigneeId", authenticate, this.removeAssigneesFromTask);
         this.router.post("/",authenticate,validateMiddleware(CreateTaskDto),this.createTask);
         this.router.patch("/:id", authenticate, validateMiddleware(setTaskDto, { skipMissingProperties: true }), this.setTask)
         this.router.delete("/:id", authenticate, this.removeTask);
+        
+      
+        this.router.patch("/:taskId/assignees/:assigneeId", authenticate, this.addAssigneesToTask);
+        this.router.delete("/:taskId/assignees/:assigneeId", authenticate, this.removeAssigneesFromTask);
+        
         this.router.post("/:employeeId",authenticate,validateMiddleware(DirectBountyDto),this.createDirectBounty);
     }
 
     createTask = async (req: RequestWithLogger, res: Response, next) => {
         try {
-            const task = await this.taskService.createTask(req.dto,req.email);
-            const responseBody = new ResponseBody(task, null, StatusMessages.CREATED);
+            const task = await this.taskService.createTask(req.dto, req.email);
+            const responseBody = new ResponseBody(
+                task,
+                null,
+                StatusMessages.CREATED
+            );
             responseBody.set_meta(1);
             res.status(StatusCodes.CREATED).send(responseBody);
-            Logger.getLogger().log({ level: 'info', message: `Task Created (${task.id})`, label: req.req_id });
+            Logger.getLogger().log({
+                level: "info",
+                message: `Task Created (${task.id})`,
+                label: req.req_id,
+            });
         } catch (err) {
             next(err);
         }
-    
-    }
+    };
 
     getAllTasks = async (req: Request, res: Response) => {
         const tasks = await this.taskService.getTasks();

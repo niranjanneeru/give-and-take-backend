@@ -5,25 +5,23 @@ import Employee from "../entity/employee.entity";
 class TaskRepository {
     constructor(private repository: Repository<Task>) {}
 
-    createTask(task:Task):Promise<Task>{
+    createTask(task: Task): Promise<Task> {
         return this.repository.save(task);
     }
-    findTasks() : Promise<Task[]>{
+
+    findTasks(): Promise<Task[]> {
         return this.repository.find();
     }
 
-    findTaskById(id) : Promise<Task>{
-        return this.repository.findOne({
-            where: {id},
-            relations:{
-                employees: true,
-                createdBy:true,
-                approvedBy:true,
-                comments:true
-            }
-        })
-
+    findTaskById(id): Promise<Task> {
+        return this.repository.createQueryBuilder('task')
+            .leftJoinAndSelect('task.comments', 'comment')
+            .leftJoinAndSelect('comment.postedBy', 'employee')
+            .orderBy('comment.createdAt')
+            .where({id})
+            .getOne()
     }
+
     updateTask(task: Task): Promise<Task>{
         return this.repository.save(task);
     }

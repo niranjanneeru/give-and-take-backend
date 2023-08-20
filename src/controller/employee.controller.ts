@@ -62,7 +62,6 @@ class EmployeeController {
         res.status(StatusCodes.OK).send(responseBody);
     };
 
-    // TODO Change Dept -> Dept.id
     getAllEmployees = async (req: Request, res: Response) => {
         const params = req.query;
         let { employeePromise, page, pageSize } =
@@ -87,7 +86,6 @@ class EmployeeController {
         res.status(StatusCodes.OK).send(responseBody);
     };
 
-    // TODO Change Dept -> Dept.id
     getEmployeeById = async (
         req: Request,
         res: Response,
@@ -110,7 +108,6 @@ class EmployeeController {
         }
     };
 
-    // TODO Change Dept -> Dept.id
     createEmployee = async (req: RequestWithLogger, res: Response, next) => {
         try {
             const employee = await this.employeeService.createEmployee(req.dto);

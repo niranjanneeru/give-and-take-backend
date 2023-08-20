@@ -18,10 +18,11 @@ class Comment extends AbstractEntity{
     @ManyToOne(() => Task, (task) => task.comments)
     task: Task;
 
-    @ManyToOne(()=>Employee,(employee)=>employee.comments)
-    @JoinColumn({name:'postedBy'})
-    postedBy:Employee;
+    @ManyToOne(() => Employee, (employee) => employee.comments)
+    @JoinColumn({ name: "postedBy" })
+    postedBy: Employee;
 }
+
 
 
 export default Comment;

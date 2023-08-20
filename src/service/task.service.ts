@@ -11,8 +11,12 @@ import { Status } from "../utils/status.enum";
 import DirectBountyDto from "../dto/direct-bounty.dto";
 
 class TaskService {
-    constructor(private taskRepository: TaskRepository,private employeeService:EmployeeService) {}
-  
+    constructor(
+        private taskRepository: TaskRepository,
+        private employeeService: EmployeeService
+    ) {}
+
+     
     getTasks(){
         return this.taskRepository.findTasks();
     }
@@ -25,6 +29,7 @@ class TaskService {
         return task;
 
     }
+  
     async createTask(createTaskDto: CreateTaskDto,email:string): Promise<Task> {
         const task = new Task();
         task.title = createTaskDto.title;
@@ -66,8 +71,8 @@ class TaskService {
         });
         return this.taskRepository.updateTask(task);
     }
-
-   addAssigneesToTask = async ( taskId: string, assigneeId : string) :  Promise<Task> => {
+  
+  addAssigneesToTask = async ( taskId: string, assigneeId : string) :  Promise<Task> => {
         const task = await this.taskRepository.findTaskById(taskId);
         const employee = await this.employeeService.getEmployeeByID(assigneeId)
 
@@ -88,6 +93,8 @@ class TaskService {
 
         return this.taskRepository.removeAssigneesFromTask(task,employee);
    }
+
+   
   
    removeTask = async (id: string): Promise<Task | null> => {
         const task = await this.taskRepository.findTaskById(id);
