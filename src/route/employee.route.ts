@@ -6,13 +6,9 @@ import EmployeeService from "../service/employee.service";
 import { departmentService } from "./department.route";
 
 
-const employeeRoute = new EmployeeController(
-    new EmployeeService(
-        new EmployeeRepository(
-            dataSource.getRepository(Employee)
-        ),
-        departmentService
-    )
-).router;
+const employeeRepository = new EmployeeRepository(dataSource.getRepository(Employee));
+export const employeeService = new EmployeeService(employeeRepository,departmentService);
+const employeeController = new EmployeeController(employeeService);
+const employeeRoute = employeeController.router;
 
 export default employeeRoute;
