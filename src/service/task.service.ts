@@ -8,6 +8,7 @@ import setTaskDto from "../dto/patch-task.dto";
 import HttpException from "../exception/http.exception";
 import { StatusCodes } from "../utils/status.code.enum";
 import { Status } from "../utils/status.enum";
+import DirectBountyDto from "../dto/direct-bounty.dto";
 
 class TaskService {
     constructor(private taskRepository: TaskRepository,private employeeService:EmployeeService) {}
@@ -35,18 +36,17 @@ class TaskService {
         task.bounty = createTaskDto.bounty;
         task.skills = createTaskDto.skills;
 
-        const emp=await this.employeeService.getEmployeeByEmail(email);
-        task.createdBy=emp;
+        const employee=await this.employeeService.getEmployeeByEmail(email);
+        task.createdBy=employee;
 
 
         return this.taskRepository.createTask(task);
-        return task;
     }
 
     editTask = async(id: string, taskDto: setTaskDto, email: string): Promise<Task> => {
 
         const task = await this.taskRepository.findTaskById(id);
-        const emp = await this.employeeService.getEmployeeByEmail(email);
+        const employee = await this.employeeService.getEmployeeByEmail(email);
 
         if(!task){
             throw new HttpException(404, `Task with id ${id} not found`);
@@ -57,7 +57,7 @@ class TaskService {
             console.log("key", key);
             if( key == 'status' ){
                 task[key] = taskDto[key];
-                task['approvedBy'] = emp
+                task['approvedBy'] = employee
                 task.employees.forEach(emp => emp.bounty+=task.bounty/task.employees.length )
             }
             else{
@@ -69,24 +69,24 @@ class TaskService {
 
    addAssigneesToTask = async ( taskId: string, assigneeId : string) :  Promise<Task> => {
         const task = await this.taskRepository.findTaskById(taskId);
-        const emp = await this.employeeService.getEmployeeByID(assigneeId)
+        const employee = await this.employeeService.getEmployeeByID(assigneeId)
 
-        if(!task && !emp){
+        if(!task && !employee){
             throw new HttpException(404, `Task or Employee not found`);
         }
 
-        return this.taskRepository.addAssigneesToTask(task,emp);
+        return this.taskRepository.addAssigneesToTask(task,employee);
    }
 
     removeAssigneesFromTask = async ( taskId: string, assigneeId : string) :  Promise<Task> => {
         const task = await this.taskRepository.findTaskById(taskId);
-        const emp = await this.employeeService.getEmployeeByID(assigneeId)
+        const employee = await this.employeeService.getEmployeeByID(assigneeId)
 
-        if(!task && !emp){
+        if(!task && !employee){
             throw new HttpException(404, `Task or Employee not found`);
         }
 
-        return this.taskRepository.removeAssigneesFromTask(task,emp);
+        return this.taskRepository.removeAssigneesFromTask(task,employee);
    }
   
    removeTask = async (id: string): Promise<Task | null> => {
@@ -99,6 +99,29 @@ class TaskService {
         }
         return this.taskRepository.removeTask(task);
     };
+
+    async createDirectBounty(directBountyDto: DirectBountyDto,email:string,employeeId:string): Promise<Task> {
+        const task = new Task();
+        task.title = directBountyDto.reason;
+        task.description = directBountyDto.reason;
+        task.deadline = new Date();
+        task.maxParticipants = 1;
+        task.isDirectBounty = true;
+        task.status = TaskStatus.COMPLETED;
+        task.bounty = directBountyDto.bounty;
+        task.skills = directBountyDto.reason;
+
+        const employee =await this.employeeService.getEmployeeByEmail(email);
+        task.createdBy=employee;
+        task.approvedBy=employee;
+
+        const recepient=await this.employeeService.getEmployeeByID(employeeId);
+        task.employees=[recepient];
+        task.employees[0].bounty+=task.bounty;
+
+
+        return this.taskRepository.createTask(task);
+    }
 
    
 }
