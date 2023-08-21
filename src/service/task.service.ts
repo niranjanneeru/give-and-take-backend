@@ -34,7 +34,6 @@ class TaskService {
   
     async createTask(createTaskDto: CreateTaskDto,email:string): Promise<Task> {
         const task = new Task();
-        //task.isDirectBounty = createTaskDto.isDirectBounty;
         task.title = createTaskDto.title;
         task.description = createTaskDto.description;
         task.deadline = createTaskDto.deadline;
