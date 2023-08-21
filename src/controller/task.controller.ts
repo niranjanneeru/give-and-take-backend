@@ -9,7 +9,6 @@ import { StatusCodes } from "../utils/status.code.enum";
 import Logger from "../logger/logger.singleton";
 import authenticate from "../middleware/authenticate.middleware";
 import SetTaskDto from "../dto/patch-task.dto";
-import DirectBountyDto from "../dto/direct-bounty.dto";
 
 
 class TaskController {
@@ -28,7 +27,6 @@ class TaskController {
         this.router.patch("/:taskId/assignees/:assigneeId", authenticate, this.addAssigneesToTask);
         this.router.delete("/:taskId/assignees/:assigneeId", authenticate, this.removeAssigneesFromTask);
         
-        this.router.post("/:employeeId",authenticate,validateMiddleware(DirectBountyDto),this.createDirectBounty);
     }
 
     createTask = async (req: RequestWithLogger, res: Response, next) => {
@@ -124,20 +122,6 @@ class TaskController {
             next(err);
         }
     };
-
-    createDirectBounty =async (req: RequestWithLogger, res: Response, next) => {
-        try {
-            const employeeId=req.params.employeeId;
-            const task = await this.taskService.createDirectBounty(req.dto,req.email,employeeId);
-            const responseBody = new ResponseBody(task, null, StatusMessages.CREATED);
-            responseBody.set_meta(1);
-            res.status(StatusCodes.CREATED).send(responseBody);
-            Logger.getLogger().log({ level: 'info', message: `Direct Bounty Created (${task.id})`, label: req.req_id });
-        } catch (err) {
-            next(err);
-        }
-    
-    }
 }
 
 export default TaskController;

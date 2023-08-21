@@ -35,17 +35,30 @@ class TaskService {
   
     async createTask(createTaskDto: CreateTaskDto,email:string): Promise<Task> {
         const task = new Task();
+        //task.isDirectBounty = createTaskDto.isDirectBounty;
         task.title = createTaskDto.title;
         task.description = createTaskDto.description;
         task.deadline = createTaskDto.deadline;
         task.maxParticipants = createTaskDto.maxParticipants;
-        task.isDirectBounty = false;
-        task.status = TaskStatus.CREATED;
         task.bounty = createTaskDto.bounty;
         task.skills = createTaskDto.skills;
-
         const employee=await this.employeeService.getEmployeeByEmail(email);
         task.createdBy=employee;
+
+        if(createTaskDto.hasOwnProperty('isDirectBounty') && createTaskDto.isDirectBounty===true)
+        {
+            task.isDirectBounty=true;
+            const recipientId=createTaskDto.recipientId;
+            const recepient=await this.employeeService.getEmployeeByID(recipientId);
+            task.employees=[recepient];
+            task.status=TaskStatus.COMPLETED;
+            task.approvedBy=employee;
+            task.employees[0].bounty+=task.bounty;
+        }
+        else{
+            task.isDirectBounty=false;
+            task.status = TaskStatus.CREATED;
+        }
 
 
         return this.taskRepository.createTask(task);
@@ -109,30 +122,6 @@ class TaskService {
         }
         return this.taskRepository.removeTask(task);
     };
-
-    async createDirectBounty(directBountyDto: DirectBountyDto,email:string,employeeId:string): Promise<Task> {
-        const task = new Task();
-        task.title = directBountyDto.reason;
-        task.description = directBountyDto.reason;
-        task.deadline = new Date();
-        task.maxParticipants = 1;
-        task.isDirectBounty = true;
-        task.status = TaskStatus.COMPLETED;
-        task.bounty = directBountyDto.bounty;
-        task.skills = directBountyDto.reason;
-
-        const employee =await this.employeeService.getEmployeeByEmail(email);
-        task.createdBy=employee;
-        task.approvedBy=employee;
-
-        const recepient=await this.employeeService.getEmployeeByID(employeeId);
-        task.employees=[recepient];
-        task.employees[0].bounty+=task.bounty;
-
-
-        return this.taskRepository.createTask(task);
-    }
-
    
 }
 
