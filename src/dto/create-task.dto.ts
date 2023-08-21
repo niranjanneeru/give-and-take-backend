@@ -1,4 +1,4 @@
-import { IsBoolean, IsDate, IsDateString, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsDate, IsDateString, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID } from "class-validator";
 import { TaskStatus } from "../utils/taskStatus.enum";
 
 class CreateTaskDto{
@@ -27,6 +27,14 @@ class CreateTaskDto{
     @IsNotEmpty()
     @IsString()
     skills:string;
+
+    @IsOptional()
+    @IsUUID()
+    recipientId:string;
+
+    @IsOptional()
+    @IsBoolean()
+    isDirectBounty:boolean;
     
 }
 
