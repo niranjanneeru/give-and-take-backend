@@ -1,4 +1,5 @@
 import CreateCommentDto from "../dto/create-comment.dto";
+import PatchCommentDto from "../dto/patch-comment-dto";
 import Comment from "../entity/comment.entity";
 import HttpException from "../exception/http.exception";
 import CommentRepository from "../repository/comment.repository";
@@ -45,6 +46,24 @@ export default class CommentService {
         comment.task = task;
 
         return this.commentRepository.createComment(comment);
+    };
+
+    patchComment = async (
+        id: string,
+        patchCommentDto: PatchCommentDto
+    ): Promise<Comment | null> => {
+        const comment = await this.commentRepository.getCommentById(+id);
+        if (!comment)
+            throw new HttpException(
+                StatusCodes.NOT_FOUND,
+                `Comment with id ${id} not found`
+            );
+        let keys = Object.getOwnPropertyNames(patchCommentDto);
+        for (const key of keys) {
+            comment[key] = patchCommentDto[key];
+        }
+
+        return this.commentRepository.patchComment(comment);
     };
 
     removeComment = async (id: number): Promise<Comment | null> => {

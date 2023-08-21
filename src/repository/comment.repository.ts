@@ -21,6 +21,10 @@ export default class CommentRepository {
         return this.repository.save(comment);
     };
 
+    patchComment = (comment: Comment): Promise<Comment> => {
+        return this.repository.save(comment);
+    };
+
     removeComment(comment: Comment): Comment | PromiseLike<Comment> {
         return this.repository.softRemove(comment);
     }
