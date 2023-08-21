@@ -10,7 +10,11 @@ class TaskRepository {
     }
 
     findTasks(): Promise<Task[]> {
-        return this.repository.find();
+        return this.repository.find({
+            relations:{
+                employees: true
+            }
+        });
     }
 
     findTaskById(id): Promise<Task> {
