@@ -21,7 +21,7 @@ class TaskRepository {
         return this.repository.createQueryBuilder('task')
             .leftJoinAndSelect('task.comments', 'comment')
             .leftJoinAndSelect('comment.postedBy', 'employee')
-            .orderBy('comment.createdAt')
+            .orderBy('comment.createdAt', 'DESC')
             .where({ id })
             .getOne()
     }
