@@ -6,7 +6,6 @@ import { TaskStatus } from "../utils/taskStatus.enum";
 import SetTaskDto from "../dto/patch-task.dto";
 import HttpException from "../exception/http.exception";
 import { StatusCodes } from "../utils/status.code.enum";
-import DirectBountyDto from "../dto/direct-bounty.dto";
 
 class TaskService {
     constructor(
