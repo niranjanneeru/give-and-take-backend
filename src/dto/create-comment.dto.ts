@@ -8,7 +8,6 @@ class CreateCommentDto {
     @IsNotEmpty()
     @IsOptional()
     @IsString()
-    @IsUrl()
     url: string;
 }
 

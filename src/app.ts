@@ -32,7 +32,7 @@ server.use("/api/roles", roleRoute);
 server.use("/api/status", statusRoute);
 server.use("/api/tasks", taskRoute);
 server.use("/api/tasks/:id/comments", commentRoute);
-server.use("/uploads", uploadRoute);
+server.use("/api/uploads", uploadRoute);
 
 server.all("*", (req: Request, res: Response) => {
     res.status(404).send();

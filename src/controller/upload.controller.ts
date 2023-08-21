@@ -31,17 +31,20 @@ export class UploadController {
 
     upload = async (req: Request, res: Response, next: NextFunction) => {
         try {
+
+            console.log(req);
             await uploadFileMiddleware(req, res);
 
-            const { originalname, filename } = req.file;
-
-            console.log(originalname, filename);
 
             if(!req.file){
                 throw new ValidationException(StatusCodes.BAD_REQUEST, "No File Provided", []);
             }
 
-            const responseBody = new ResponseBody({"url": `${process.env.SITE_URL}/uploads/${req.file.filename}`}, null, StatusMessages.CREATED);
+            const { originalname, filename } = req.file;
+
+            console.log(originalname, filename);
+
+            const responseBody = new ResponseBody({"url": `${process.env.SITE_URL}/api/uploads/${req.file.filename}`}, null, StatusMessages.CREATED);
             responseBody.set_meta(1);
 
             res.status(StatusCodes.CREATED).send(responseBody);
