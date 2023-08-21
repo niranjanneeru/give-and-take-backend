@@ -21,6 +21,11 @@ class TaskService {
 
     async getTaskById(id: string){
         const task = await this.taskRepository.findTaskById(id);
+        const task_creator_approver = await this.taskRepository.findTaskCreatorApprover(id);
+        const task_assignees = await this.taskRepository.findTaskAssignees(id);
+        task['createdBy'] = task_creator_approver['createdBy'];
+        task['approvedBy'] = task_creator_approver['approvedBy'];
+        task['assignees'] = task_assignees['employees']
         if(!task){
             throw new HttpException(StatusCodes.NOT_FOUND, `Task with id ${id} not found`);
         }
@@ -71,7 +76,7 @@ class TaskService {
     }
   
   addAssigneesToTask = async ( taskId: string, assigneeId : string) :  Promise<Task> => {
-        const task = await this.taskRepository.findTaskById(taskId);
+        const task = await this.taskRepository.findTaskAssignees(taskId);
         const employee = await this.employeeService.getEmployeeByID(assigneeId)
 
         if(!task && !employee){
@@ -82,7 +87,7 @@ class TaskService {
    }
 
     removeAssigneesFromTask = async ( taskId: string, assigneeId : string) :  Promise<Task> => {
-        const task = await this.taskRepository.findTaskById(taskId);
+        const task = await this.taskRepository.findTaskAssignees(taskId);
         const employee = await this.employeeService.getEmployeeByID(assigneeId)
 
         if(!task && !employee){
