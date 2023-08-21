@@ -8,12 +8,13 @@ import RequestWithLogger from "../utils/request.logger";
 import authenticate from "../middleware/authenticate.middleware";
 import validateMiddleware from "../middleware/validate.middleware";
 import CreateCommentDto from "../dto/create-comment.dto";
+import PatchCommentDto from "../dto/patch-comment-dto";
 
 export default class CommentController {
     public router: Router;
 
     constructor(private commentService: CommentService) {
-        this.router = Router({mergeParams: true});
+        this.router = Router({ mergeParams: true });
 
         this.router.get("/", this.getAllComments);
         this.router.get("/:id", this.getCommentById);
@@ -22,6 +23,14 @@ export default class CommentController {
             authenticate,
             validateMiddleware(CreateCommentDto),
             this.createComment
+        );
+        this.router.patch(
+            "/:id",
+            authenticate,
+            validateMiddleware(PatchCommentDto, {
+                skipMissingProperties: true,
+            }),
+            this.patchComment
         );
         this.router.delete("/:id", this.removeComment);
     }
@@ -83,6 +92,29 @@ export default class CommentController {
                 message: `Comment Created (${comment.id})`,
                 label: req.req_id,
             });
+        } catch (err) {
+            next(err);
+        }
+    };
+
+    patchComment = async (
+        req: RequestWithLogger,
+        res: Response,
+        next: NextFunction
+    ) => {
+        let commentId = req.params.id;
+        try {
+            const comment = await this.commentService.patchComment(
+                commentId,
+                req.dto
+            );
+            const responseBody = new ResponseBody(
+                comment,
+                null,
+                StatusMessages.OK
+            );
+            responseBody.set_meta(1);
+            res.status(StatusCodes.OK).send(responseBody);
         } catch (err) {
             next(err);
         }
