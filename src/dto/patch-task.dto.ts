@@ -1,6 +1,5 @@
 import { IsNotEmpty, IsNumber, IsPositive, IsString } from "class-validator";
 import { TaskStatus } from "../utils/taskStatus.enum";
-import Employee from "../entity/employee.entity";
 
 class SetTaskDto {
 
@@ -33,6 +32,7 @@ class SetTaskDto {
     @IsNotEmpty()
     @IsString()
     skills: string;
+
 
 }
 

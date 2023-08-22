@@ -85,7 +85,7 @@ class TaskService {
         taskDto: SetTaskDto,
         email: string
     ): Promise<Task> => {
-        const task = await this.taskRepository.findTaskById(id);
+        const task = await this.taskRepository.findTaskAssignees(id);
         const employee = await this.employeeService.getEmployeeByEmail(email);
 
         if (!task) {

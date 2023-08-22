@@ -33,7 +33,7 @@ class EmployeeController {
 
     getLoggedEmployee = async (req: RequestWithUser, res: Response) => {
         const responseBody = new ResponseBody(
-            { name: req.name, email: req.email, role: req.role },
+            { name: req.name, email: req.email, role: req.role, id: req.userId },
             null,
             StatusMessages.OK
         );
