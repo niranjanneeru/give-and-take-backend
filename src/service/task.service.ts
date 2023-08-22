@@ -13,19 +13,19 @@ class TaskService {
         private employeeService: EmployeeService
     ) {}
 
-    async getTasks(filter: string) {
+    async getTasks(filter: string, searchQuery: string) {
         if (
             filter == TaskStatus.CREATED ||
             filter == TaskStatus.IN_PROGRESS ||
             filter == TaskStatus.REQUEST_CHANGE ||
             filter == TaskStatus.COMPLETED
         ) {
-            return this.taskRepository.findTasksByTaskCompletionStatus(filter);
+            return this.taskRepository.findTasksByTaskCompletionStatus(filter, searchQuery);
         } else if (filter == TaskStatus.IS_EXPIRED) {
-            return this.taskRepository.findExpiredTasks();
+            return this.taskRepository.findExpiredTasks(searchQuery);
         } else if (filter == TaskStatus.IS_DIRECT_BOUNTY) {
-            return this.taskRepository.findDirectBountyTasks();
-        } else return this.taskRepository.findTasks();
+            return this.taskRepository.findDirectBountyTasks(searchQuery);
+        } else return this.taskRepository.findTasks(searchQuery);
     }
 
     async getTaskById(id: string) {
