@@ -2,7 +2,7 @@ import { DataSource, Repository } from "typeorm";
 import Employee from "../entity/employee.entity";
 
 class EmployeeRepository {
-    constructor(private repository: Repository<Employee>) { }
+    constructor(private repository: Repository<Employee>) {}
 
     find(skip, take): Promise<Employee[]> {
         return this.repository
@@ -22,10 +22,10 @@ class EmployeeRepository {
             relations: {
                 address: true,
                 department: true,
+                role: true,
             },
         });
     }
-    
 
     countEmployee(): Promise<number> {
         return this.repository.count();
