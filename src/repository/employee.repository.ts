@@ -9,7 +9,7 @@ class EmployeeRepository {
             .createQueryBuilder("employee")
             .leftJoinAndSelect("employee.department", "department")
             .addSelect("employee.departmentId")
-            .orderBy("employee.createdAt")
+            .orderBy("employee.bounty", "DESC")
             .skip(skip)
             .take(take)
             .getMany();
