@@ -20,30 +20,11 @@ class DepartmentController {
         this.router = Router();
 
         this.router.get("/", this.getAllDepartments)
-        this.router.post("/",  validateMiddleware(CreateDepartmentDto), this.createDepartment);
+        this.router.post("/", authenticate, validateMiddleware(CreateDepartmentDto), this.createDepartment);
         this.router.get("/:id", this.getDepartmentById);
-        this.router.put(
-            "/:id",
-            authenticate,
-            authorize(Role.HR),
-            validateMiddleware(EditDepartmentDto),
-            this.editDepartment
-        );
-        this.router.patch(
-            "/:id",
-            authenticate,
-            authorize(Role.HR),
-            validateMiddleware(PatchDepartmentDto, {
-                skipMissingProperties: true,
-            }),
-            this.setDepartment
-        );
-        this.router.delete(
-            "/:id",
-            authenticate,
-            authorize(Role.HR),
-            this.removeDepartment
-        );
+        this.router.put("/:id", authenticate, validateMiddleware(EditDepartmentDto), this.editDepartment);
+        this.router.patch("/:id", authenticate, validateMiddleware(PatchDepartmentDto, { skipMissingProperties: true }), this.setDepartment);
+        this.router.delete("/:id", authenticate,  this.removeDepartment);
     }
 
     getAllDepartments = async (req: Request, res: Response) => {
