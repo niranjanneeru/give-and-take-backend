@@ -5,12 +5,11 @@ class EmployeeRepository {
     constructor(private repository: Repository<Employee>) { }
 
     find(skip, take): Promise<Employee[]> {
-        // return this.repository.find();
         return this.repository
-            .createQueryBuilder('employee')
-            .leftJoinAndSelect('employee.department', 'department')
-            .addSelect('employee.departmentId')
-            .orderBy("employee.createdAt")
+            .createQueryBuilder("employee")
+            .leftJoinAndSelect("employee.department", "department")
+            .addSelect("employee.departmentId")
+            .orderBy("employee.bounty", "DESC")
             .skip(skip)
             .take(take)
             .getMany();
@@ -21,10 +20,11 @@ class EmployeeRepository {
             where: { id },
             relations: {
                 address: true,
-                department: true
-            }
+                department: true,
+            },
         });
     }
+    
 
     countEmployee(): Promise<number> {
         return this.repository.count();
@@ -32,9 +32,9 @@ class EmployeeRepository {
 
     findEmployeeByEmail(email: string): Promise<Employee> {
         return this.repository
-            .createQueryBuilder('employee')
-            .addSelect('employee.password')
-            .where('email = :email', { email })
+            .createQueryBuilder("employee")
+            .addSelect("employee.password")
+            .where("email = :email", { email })
             .getOne();
     }
 
@@ -51,11 +51,11 @@ class EmployeeRepository {
     }
 
     findByFilter(params: boolean): Promise<Employee[]> {
-        return this.repository.createQueryBuilder()
-            .where('is_active = :status', { status: params })
-            .getMany()
+        return this.repository
+            .createQueryBuilder()
+            .where("is_active = :status", { status: params })
+            .getMany();
     }
 }
-
 
 export default EmployeeRepository;

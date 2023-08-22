@@ -142,6 +142,10 @@ class EmployeeService {
 
         return { token, employeeDetails: employee };
     }
+
+    getEmployeeByEmail=async (email:string)=>{
+        return this.employeeRepository.findEmployeeByEmail(email);
+    }
 }
 
 export default EmployeeService

@@ -1,10 +1,12 @@
-import { Column, Entity, Index, ManyToOne, OneToOne, PrimaryColumn, PrimaryGeneratedColumn, RelationId } from 'typeorm'
+import { Column, Entity, Index, ManyToOne, OneToOne, PrimaryColumn, PrimaryGeneratedColumn, RelationId, OneToMany, ManyToMany } from 'typeorm'
 import Address from './address.entity';
 import Department from './department.entity';
 import AbstractEntity from './abstract.enitiy';
 import { Exclude, instanceToPlain } from 'class-transformer';
 import { Status } from '../utils/status.enum';
 import Role from './role.entity';
+import Task from './task.entity';
+import TaskComments from './comment.entity';
 
 @Entity()
 @Index(["email"], { unique: true })
@@ -48,6 +50,21 @@ export default class Employee extends AbstractEntity {
 
     @Column()
     experience: number
+
+    @Column({default : 0})
+    bounty:number
+
+    @ManyToMany(() => Task, (task) => task.employees)
+    tasks: Task[];
+
+    @OneToMany(()=> Task , (task)=> task.createdBy)
+    tasksCreated:Task[];
+
+    @OneToMany(()=> Task , (task)=> task.approvedBy)
+    tasksApproved:Task[];
+
+    @OneToMany(()=>TaskComments,(taskComment) => taskComment.postedBy)
+    comments:TaskComments[];
 
     toJSON() {
         return instanceToPlain(this);
