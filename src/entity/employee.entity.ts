@@ -76,4 +76,7 @@ export default class Employee extends AbstractEntity {
 
     @OneToMany(()=>RedeemRequest,(redeemRequest) => redeemRequest.employee)
     requests:RedeemRequest[];
+
+    @OneToMany(()=> RedeemRequest , (request)=> request.approvedBy)
+    requestsApproved: RedeemRequest[]
 }

@@ -1,8 +1,9 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import Employee from "./employee.entity";
+import AbstractEntity from "./abstract.enitiy";
 
 @Entity()
-export default class RedeemRequest{
+export default class RedeemRequest extends AbstractEntity {
 
     @PrimaryGeneratedColumn('uuid')
     id: string;
@@ -13,4 +14,13 @@ export default class RedeemRequest{
 
     @Column()
     bounty: number;
+
+    @Column({ default: false })
+    isApproved: boolean;
+
+    @ManyToOne(() => Employee, (employee) => employee.requestsApproved, {
+        nullable: true
+    })
+    @JoinColumn({ name: "approvedBy" })
+    approvedBy: Employee
 }
