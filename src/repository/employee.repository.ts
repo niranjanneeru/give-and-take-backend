@@ -8,6 +8,7 @@ class EmployeeRepository {
         return this.repository
             .createQueryBuilder("employee")
             .leftJoinAndSelect("employee.department", "department")
+            .leftJoinAndSelect("employee.role", "role")
             .addSelect("employee.departmentId")
             .orderBy("employee.bounty", "DESC")
             .skip(skip)
@@ -33,6 +34,7 @@ class EmployeeRepository {
     findEmployeeByEmail(email: string): Promise<Employee> {
         return this.repository
             .createQueryBuilder("employee")
+            .leftJoinAndSelect("employee.role", "role")
             .addSelect("employee.password")
             .where("email = :email", { email })
             .getOne();
