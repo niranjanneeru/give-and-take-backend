@@ -7,6 +7,7 @@ import { Status } from '../utils/status.enum';
 import Role from './role.entity';
 import Task from './task.entity';
 import TaskComments from './comment.entity';
+import RedeemRequest from './redeem.entity';
 
 @Entity()
 @Index(["email"], { unique: true })
@@ -54,6 +55,9 @@ export default class Employee extends AbstractEntity {
     @Column({default : 0})
     bounty:number
 
+    @Column({default : 0})
+    redeemed_bounty:number
+
     @ManyToMany(() => Task, (task) => task.employees)
     tasks: Task[];
 
@@ -69,4 +73,7 @@ export default class Employee extends AbstractEntity {
     toJSON() {
         return instanceToPlain(this);
     }
+
+    @OneToMany(()=>RedeemRequest,(redeemRequest) => redeemRequest.employee)
+    requests:RedeemRequest[];
 }
