@@ -33,14 +33,22 @@ class TaskRepository {
         if (searchQuery) whereConditions['title'] = Like(`%${searchQuery}%`);
         return this.repository
             .createQueryBuilder("task")
-            .where(whereConditions)
+            .where({ status: filter })
+            .leftJoinAndSelect("task.employees", "employees")
             .getMany();
     }
 
-    findExpiredTasks(searchQuery: string): Promise<Task[]> {
-        const whereConditions = { deadline: Raw((alias) => `${alias} < NOW()`) }
-        if (searchQuery) whereConditions['title'] = Like(`%${searchQuery}%`);
-        return this.repository.findBy(whereConditions);
+    // findExpiredTasks(): Promise<Task[]> {
+    //     return this.repository.findBy({
+    //         deadline: Raw((alias) => `${alias} < NOW()`),
+    //     });
+    // }
+
+    async findExpiredTasks(): Promise<Task[]> {
+        return this.repository.createQueryBuilder("task")
+            .leftJoinAndSelect("task.employees", "employees")
+            .where("task.deadline < NOW()")
+            .getMany();
     }
 
     findDirectBountyTasks(searchQuery: string): Promise<Task[]> {
@@ -49,7 +57,8 @@ class TaskRepository {
 
         return this.repository
             .createQueryBuilder("task")
-            .where(whereConditions)
+            .where({ isDirectBounty: true })
+            .leftJoinAndSelect("task.employees", "employees")
             .getMany();
     }
 
