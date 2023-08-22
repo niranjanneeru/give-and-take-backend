@@ -2,40 +2,54 @@ import { Repository } from "typeorm/repository/Repository";
 import Task from "../entity/task.entity";
 import Employee from "../entity/employee.entity";
 import { TaskStatus } from "../utils/taskStatus.enum";
-import { Raw } from "typeorm";
+import { Like, Raw } from "typeorm";
 
 class TaskRepository {
-    constructor(private repository: Repository<Task>) {}
+    constructor(private repository: Repository<Task>) { }
 
     createTask(task: Task): Promise<Task> {
         return this.repository.save(task);
     }
 
-    findTasks(): Promise<Task[]> {
+    findTasks(searchQuery: string): Promise<Task[]> {
+        let whereConditions = [{ status: TaskStatus.CREATED }, { status: TaskStatus.IN_PROGRESS }]
+        if (searchQuery) {
+            whereConditions = whereConditions.map((condition) => {
+                condition['title'] = Like(`%${searchQuery}%`)
+                return condition;
+            })
+        }
+
         return this.repository.find({
+            where: whereConditions,
             relations: {
                 employees: true,
             },
         });
     }
 
-    findTasksByTaskCompletionStatus(filter: string): Promise<Task[]> {
+    findTasksByTaskCompletionStatus(filter: string, searchQuery: string): Promise<Task[]> {
+        const whereConditions = { status: filter }
+        if (searchQuery) whereConditions['title'] = Like(`%${searchQuery}%`);
         return this.repository
             .createQueryBuilder("task")
-            .where({ status: filter })
+            .where(whereConditions)
             .getMany();
     }
 
-    findExpiredTasks(): Promise<Task[]> {
-        return this.repository.findBy({
-            deadline: Raw((alias) => `${alias} < NOW()`),
-        });
+    findExpiredTasks(searchQuery: string): Promise<Task[]> {
+        const whereConditions = { deadline: Raw((alias) => `${alias} < NOW()`) }
+        if (searchQuery) whereConditions['title'] = Like(`%${searchQuery}%`);
+        return this.repository.findBy(whereConditions);
     }
 
-    findDirectBountyTasks(): Promise<Task[]> {
+    findDirectBountyTasks(searchQuery: string): Promise<Task[]> {
+        const whereConditions = { isDirectBounty: true }
+        if (searchQuery) whereConditions['title'] = Like(`%${searchQuery}%`);
+
         return this.repository
             .createQueryBuilder("task")
-            .where({ isDirectBounty: true })
+            .where(whereConditions)
             .getMany();
     }
 

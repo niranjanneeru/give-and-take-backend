@@ -66,7 +66,8 @@ class TaskController {
 
     getAllTasks = async (req: Request, res: Response) => {
         const filterCondition = req.query.status as string;
-        const tasks = await this.taskService.getTasks(filterCondition);
+        const searchQuery = req.query.search as string;
+        const tasks = await this.taskService.getTasks(filterCondition, searchQuery);
         const responseBody = new ResponseBody(tasks, null, StatusMessages.OK);
         responseBody.set_meta(tasks.length);
         res.status(StatusCodes.OK).send(responseBody);

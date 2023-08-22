@@ -7,7 +7,6 @@ import CreateEmployeeDto from "../dto/create-employee.dto";
 import LoginEmployeeDto from "../dto/login.employee.dto";
 import authenticate from "../middleware/authenticate.middleware";
 import authorize from "../middleware/authorize.middleware";
-import { Role } from "../utils/role.enum";
 import { StatusMessages } from "../utils/status.message.enum";
 import { StatusCodes } from "../utils/status.code.enum";
 import RequestWithLogger from "../utils/request.logger";
