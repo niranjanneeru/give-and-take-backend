@@ -22,6 +22,7 @@ class EmployeeRepository {
             relations: {
                 address: true,
                 department: true,
+                role: true
             },
         });
     }
