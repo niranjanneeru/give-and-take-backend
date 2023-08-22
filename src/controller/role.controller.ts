@@ -3,6 +3,8 @@ import RoleService from "../service/role.service";
 import ResponseBody from "../utils/response.body";
 import { StatusMessages } from "../utils/status.message.enum";
 import { StatusCodes } from "../utils/status.code.enum";
+import authorize from "../middleware/authorize.middleware";
+import Permission from "../entity/permission.entity";
 
 class RoleController{
     public router: Router;
@@ -10,11 +12,11 @@ class RoleController{
         private roleService : RoleService
     ){
         this.router = Router();
-        this.router.get("/", this.getAllRoles);
+        this.router.get("/",this.getAllRoles);
     }
 
     getAllRoles = async (req: Request, res: Response) => {
-        const roles =  this.roleService.getRoles();
+        const roles =  await this.roleService.getRoles();
         const responseBody = new ResponseBody(roles, null, StatusMessages.OK);
         responseBody.set_meta(roles.length);
         res.status(StatusCodes.OK).send(responseBody);

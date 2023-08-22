@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import RequestWithUser from "../utils/request.user";
 import jwtPayload from "../utils/jwt.payload.type";
 import RequestWithLogger from "../utils/request.logger";
 import Logger from "../logger/logger.singleton";
