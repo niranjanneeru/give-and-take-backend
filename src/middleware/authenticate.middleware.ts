@@ -11,6 +11,7 @@ const authenticate = async(req: RequestWithLogger, res: Response, next: NextFunc
         req.name = payload.name;
         req.email = payload.email;
         req.role = payload.role;
+        req.userId = payload.id;
         Logger.getLogger().log({ level: 'info', message: `${req.email} Logged In`, label: req.req_id});
         next();
     }catch(err){
