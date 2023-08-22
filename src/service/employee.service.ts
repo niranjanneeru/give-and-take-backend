@@ -140,7 +140,8 @@ class EmployeeService {
         const payload: jwtPayload = {
             name: employee.name,
             email: employee.email,
-            role: employee.role.name
+            role: employee.role.name,
+            id: employee.id
         }
 
         const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {
