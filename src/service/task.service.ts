@@ -119,6 +119,12 @@ class TaskService {
             throw new HttpException(404, `Task or Employee not found`);
         }
 
+        if(task.employees.length === task.maxParticipants){
+            throw new HttpException(400, 'Participant Count Exceeds');
+        }
+
+        task.status = TaskStatus.IN_PROGRESS;
+
         return this.taskRepository.addAssigneesToTask(task, employee);
     };
 
