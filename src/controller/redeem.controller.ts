@@ -63,7 +63,10 @@ class RedeemController {
     };
 
     getAllRequests = async (req: Request, res: Response) => {
-        const requests = await this.redeemService.getAllRequests();
+        const filterCondition = req.query.history as string;
+        const requests = await this.redeemService.getAllRequests(
+            filterCondition
+        );
         const responseBody = new ResponseBody(
             requests,
             null,
@@ -105,8 +108,10 @@ class RedeemController {
                 req.dto,
                 req.userId
             );
+            const deletedredeeemRequest =
+                await this.redeemService.removeRequest(redeemRequestId);
             const responseBody = new ResponseBody(
-                redeemRequest,
+                deletedredeeemRequest,
                 null,
                 StatusMessages.OK
             );

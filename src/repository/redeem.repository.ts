@@ -18,6 +18,16 @@ class RedeemRepository {
         });
     }
 
+    findAllWithHistory(): Promise<RedeemRequest[]> {
+        return this.repository.find({
+            relations: {
+                employee: true,
+                approvedBy: true,
+            },
+            withDeleted: true,
+        });
+    }
+
     findRequestByEmployeeWithId(id) {
         return this.repository.findOne({
             relations: {

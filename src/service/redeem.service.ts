@@ -29,8 +29,12 @@ class RedeemService {
         return this.redeemRepository.createRequest(redeemRequest);
     }
 
-    getAllRequests() {
-        return this.redeemRepository.findAll();
+    getAllRequests(filter: string) {
+        if (filter == "SHOW") {
+            return this.redeemRepository.findAllWithHistory();
+        } else {
+            return this.redeemRepository.findAll();
+        }
     }
 
     async getRequestById(requestId: string) {
@@ -47,7 +51,7 @@ class RedeemService {
     patchRequest = async (
         id: string,
         patchRedeemRequestDto: PatchRedeemRequestDto,
-        employeeId: string
+        userId: string
     ): Promise<RedeemRequest | null> => {
         const redeeemRequest: RedeemRequest =
             await this.redeemRepository.findRequestById(id);
@@ -58,10 +62,12 @@ class RedeemService {
             );
 
         const keys = Object.getOwnPropertyNames(patchRedeemRequestDto);
+
         redeeemRequest.employee.redeemed_bounty += redeeemRequest.bounty;
+        const employee = await this.employeeService.getEmployeeByID(userId);
+        redeeemRequest.approvedBy = employee;
 
         for (const key of keys) {
-            // if (key === "approvedBy") redeeemRequest.approvedBy = employee;
             redeeemRequest[key] = patchRedeemRequestDto[key];
         }
 
