@@ -108,10 +108,8 @@ class RedeemController {
                 req.dto,
                 req.userId
             );
-            const deletedredeeemRequest =
-                await this.redeemService.removeRequest(redeemRequestId);
             const responseBody = new ResponseBody(
-                deletedredeeemRequest,
+                redeemRequest,
                 null,
                 StatusMessages.OK
             );

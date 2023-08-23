@@ -12,7 +12,10 @@ class RedeemService {
         private employeeService: EmployeeService
     ) {}
 
-    async createRequest(redeemRequestDto: CreateRequestDto, userId: string) {
+    async createRequest(
+        createRedeemRequestDto: CreateRequestDto,
+        userId: string
+    ) {
         const existingRequest: RedeemRequest =
             await this.redeemRepository.findRequestByEmployeeWithId(userId);
         if (existingRequest) {
@@ -21,11 +24,26 @@ class RedeemService {
                 `Cannot initiate a redeem request when a pending request already exist`
             );
         }
+
         const redeemRequest = new RedeemRequest();
-        redeemRequest.bounty = redeemRequestDto.bounty;
         redeemRequest.employee = await this.employeeService.getEmployeeByID(
             userId
         );
+
+        const minLimit = redeemRequest.employee.redeemed_bounty > 0 ? 25 : 100;
+        if (
+            redeemRequest.employee.bounty -
+                redeemRequest.employee.redeemed_bounty -
+                createRedeemRequestDto.bounty <
+            minLimit
+        ) {
+            throw new HttpException(
+                StatusCodes.FORBIDDEN,
+                `Insufficient bounty points to initiate a redeem request`
+            );
+        }
+
+        redeemRequest.bounty = createRedeemRequestDto.bounty;
         return this.redeemRepository.createRequest(redeemRequest);
     }
 
