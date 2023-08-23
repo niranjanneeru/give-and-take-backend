@@ -30,12 +30,19 @@ class RedeemService {
             userId
         );
 
+        if( redeemRequest.employee.bounty -
+                redeemRequest.employee.redeemed_bounty < createRedeemRequestDto.bounty){
+            throw new HttpException(
+                StatusCodes.FORBIDDEN,
+                `Insufficient bounty points to initiate a redeem request`
+            );
+        }
+
         const minLimit = redeemRequest.employee.redeemed_bounty > 0 ? 25 : 100;
         if (
             redeemRequest.employee.bounty -
-                redeemRequest.employee.redeemed_bounty -
-                createRedeemRequestDto.bounty <
-            minLimit
+                redeemRequest.employee.redeemed_bounty 
+            < minLimit
         ) {
             throw new HttpException(
                 StatusCodes.FORBIDDEN,
