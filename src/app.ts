@@ -15,6 +15,7 @@ import cors from "cors";
 import taskRoute from "./route/task.route";
 import commentRoute from "./route/comment.route";
 import uploadRoute from "./route/upload.route";
+import redeemRoute from "./route/redeem.route";
 
 const server = express();
 
@@ -33,6 +34,7 @@ server.use("/api/status", statusRoute);
 server.use("/api/tasks", taskRoute);
 server.use("/api/tasks/:id/comments", commentRoute);
 server.use("/api/uploads", uploadRoute);
+server.use("/api/redeem-requests", redeemRoute);
 
 server.all("*", (req: Request, res: Response) => {
     res.status(404).send();

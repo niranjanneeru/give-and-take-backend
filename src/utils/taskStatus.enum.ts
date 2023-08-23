@@ -5,4 +5,5 @@ export enum TaskStatus {
     REQUEST_CHANGE = "REQUEST_CHANGE",
     IS_EXPIRED = "IS_EXPIRED",
     IS_DIRECT_BOUNTY = "IS_DIRECT_BOUNTY",
+
 }
