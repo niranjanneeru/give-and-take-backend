@@ -85,6 +85,21 @@ export default class Employee extends AbstractEntity {
     @OneToMany(() => RedeemRequest, (request) => request.approvedBy)
     requestsApproved: RedeemRequest[];
 
+    @Column({default : 0})
+    bounty:number
+
+    @ManyToMany(() => Task, (task) => task.employees)
+    tasks: Task[];
+
+    @OneToMany(()=> Task , (task)=> task.createdBy)
+    tasksCreated:Task[];
+
+    @OneToMany(()=> Task , (task)=> task.approvedBy)
+    tasksApproved:Task[];
+
+    @OneToMany(()=>TaskComments,(taskComment) => taskComment.postedBy)
+    comments:TaskComments[];
+
     toJSON() {
         return instanceToPlain(this);
     }

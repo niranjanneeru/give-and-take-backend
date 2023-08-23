@@ -69,4 +69,5 @@ export default class Task extends AbstractEntity {
     @OneToMany(() => Comment, (comment) => comment.task)
     comments: Comment[];
 
+
 }
