@@ -33,21 +33,17 @@ class TaskRepository {
         if (searchQuery) whereConditions['title'] = Like(`%${searchQuery}%`);
         return this.repository
             .createQueryBuilder("task")
-            .where({ status: filter })
+            .where(whereConditions)
             .leftJoinAndSelect("task.employees", "employees")
             .getMany();
     }
 
-    // findExpiredTasks(): Promise<Task[]> {
-    //     return this.repository.findBy({
-    //         deadline: Raw((alias) => `${alias} < NOW()`),
-    //     });
-    // }
-
-    async findExpiredTasks(): Promise<Task[]> {
+    async findExpiredTasks(searchQuery: string): Promise<Task[]> {
+        const whereConditions = { deadline: Raw((alias) => `${alias} < NOW()`) }
+        if (searchQuery) whereConditions['title'] = Like(`%${searchQuery}%`);
         return this.repository.createQueryBuilder("task")
             .leftJoinAndSelect("task.employees", "employees")
-            .where("task.deadline < NOW()")
+            .where(whereConditions)
             .getMany();
     }
 
