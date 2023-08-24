@@ -16,6 +16,7 @@ import taskRoute from "./route/task.route";
 import commentRoute from "./route/comment.route";
 import uploadRoute from "./route/upload.route";
 import redeemRoute from "./route/redeem.route";
+import path from "path";
 
 const server = express();
 
@@ -26,6 +27,8 @@ server.use(monitor);
 server.use(express.json());
 
 server.use(loggerMiddleware);
+
+server.use(express.static(path.join(get_path(), '..' ,'uploads')));
 
 server.use("/api/employees", employeeRoute);
 server.use("/api/departments", departmentRoute);

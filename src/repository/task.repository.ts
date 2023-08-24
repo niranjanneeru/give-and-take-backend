@@ -13,6 +13,7 @@ class TaskRepository {
 
     findTasks(searchQuery: string): Promise<Task[]> {
         let whereConditions = [{ status: TaskStatus.CREATED }, { status: TaskStatus.IN_PROGRESS }]
+        whereConditions['deadline'] = Raw((alias) => `${alias} > NOW()`)
         if (searchQuery) {
             whereConditions = whereConditions.map((condition) => {
                 condition['title'] = Like(`%${searchQuery}%`)
