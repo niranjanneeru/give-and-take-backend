@@ -9,6 +9,7 @@ import { StatusCodes } from "../utils/status.code.enum";
 import Logger from "../logger/logger.singleton";
 import authenticate from "../middleware/authenticate.middleware";
 import SetTaskDto from "../dto/patch-task.dto";
+import PatchTaskAssigneesDto from "../dto/patch.task.assignees.dto";
 
 class TaskController {
     public router: Router;
@@ -31,6 +32,13 @@ class TaskController {
             this.setTask
         );
         this.router.delete("/:id", authenticate, this.removeTask);
+
+        this.router.patch(
+            "/:taskId/assignees/",
+            authenticate,
+            validateMiddleware(PatchTaskAssigneesDto),
+            this.addAssigneesListToTask
+        );
 
         this.router.patch(
             "/:taskId/assignees/:assigneeId",
@@ -113,19 +121,42 @@ class TaskController {
         }
     };
 
-    addAssigneesToTask = async (req: Request, res: Response) => {
+    addAssigneesToTask = async (req: Request, res: Response, next: NextFunction) => {
         const taskId = req.params.taskId;
         const assigneeId = req.params.assigneeId;
 
-        const task = await this.taskService.addAssigneesToTask(
-            taskId,
-            assigneeId
-        );
+        try {
 
-        const responseBody = new ResponseBody(task, null, StatusMessages.OK);
-        responseBody.set_meta(1);
-        res.status(StatusCodes.OK).send(responseBody);
+            const task = await this.taskService.addAssigneesToTask(
+                taskId,
+                assigneeId
+            );
+
+            const responseBody = new ResponseBody(task, null, StatusMessages.OK);
+            responseBody.set_meta(1);
+            res.status(StatusCodes.OK).send(responseBody);
+        } catch (err) {
+            next(err);
+        }
     };
+
+    addAssigneesListToTask = async (req: RequestWithLogger, res: Response, next: NextFunction) => {
+        const taskId = req.params.taskId;
+        try {
+
+            const task = await this.taskService.addAssigneesListToTask(
+                taskId,
+                req.dto
+            );
+
+            const responseBody = new ResponseBody(task, null, StatusMessages.OK);
+            responseBody.set_meta(1);
+            res.status(StatusCodes.OK).send(responseBody);
+        } catch (err) {
+            next(err);
+        }
+
+    }
 
     removeAssigneesFromTask = async (req: Request, res: Response) => {
         const taskId = req.params.taskId;
