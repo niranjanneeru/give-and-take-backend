@@ -71,7 +71,7 @@ class EmployeeController {
     ) => {
         try {
             const employeeId = req.params.id;
-            const employee = await this.employeeService.getEmployeeByID(
+            const employee = await this.employeeService.getEmployeeTasksByID(
                 employeeId
             );
             const responseBody = new ResponseBody(

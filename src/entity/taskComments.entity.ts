@@ -15,7 +15,7 @@ class TaskComments extends AbstractEntity{
     @Column()
     url: string;
 
-    @ManyToOne(() => Task, (task) => task.taskcomments)
+    @ManyToOne(() => Task, (task) => task.comments)
     task: Task;
 
     @ManyToOne(()=>Employee,(employee)=>employee.comments)
