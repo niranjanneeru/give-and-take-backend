@@ -17,6 +17,9 @@ class RedeemRepository {
             },
             where: {
                 isApproved: false
+            },
+            order: {
+                createdAt: "DESC"
             }
         });
     }
@@ -37,9 +40,10 @@ class RedeemRepository {
                 employee: true,
             },
             where: {
+                isApproved: false,
                 employee: {
                     id: id,
-                },
+                }
             },
         });
     }

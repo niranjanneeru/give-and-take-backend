@@ -113,18 +113,23 @@ class TaskController {
         }
     };
 
-    addAssigneesToTask = async (req: Request, res: Response) => {
+    addAssigneesToTask = async (req: Request, res: Response, next: NextFunction) => {
         const taskId = req.params.taskId;
         const assigneeId = req.params.assigneeId;
 
-        const task = await this.taskService.addAssigneesToTask(
-            taskId,
-            assigneeId
-        );
+        try {
 
-        const responseBody = new ResponseBody(task, null, StatusMessages.OK);
-        responseBody.set_meta(1);
-        res.status(StatusCodes.OK).send(responseBody);
+            const task = await this.taskService.addAssigneesToTask(
+                taskId,
+                assigneeId
+            );
+
+            const responseBody = new ResponseBody(task, null, StatusMessages.OK);
+            responseBody.set_meta(1);
+            res.status(StatusCodes.OK).send(responseBody);
+        } catch (err) {
+            next(err);
+        }
     };
 
     removeAssigneesFromTask = async (req: Request, res: Response) => {

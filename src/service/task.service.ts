@@ -99,7 +99,7 @@ class TaskService {
                 task[key] = taskDto[key];
                 task["approvedBy"] = employee;
                 task.employees.forEach(
-                    (emp) => (emp.bounty += task.bounty / task.employees.length)
+                    (emp) => (emp.bounty += Math.ceil(task.bounty / task.employees.length))
                 );
             } else {
                 task[key] = taskDto[key];
@@ -119,7 +119,12 @@ class TaskService {
             throw new HttpException(404, `Task or Employee not found`);
         }
 
-        if(task.employees.length === task.maxParticipants){
+        console.log(task);
+
+        console.log(task.employees.length);
+        console.log(task.maxParticipants);
+
+        if(task.employees.length >= task.maxParticipants){
             throw new HttpException(400, 'Participant Count Exceeds');
         }
 

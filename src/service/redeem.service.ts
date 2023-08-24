@@ -10,7 +10,7 @@ class RedeemService {
     constructor(
         private redeemRepository: RedeemRepository,
         private employeeService: EmployeeService
-    ) {}
+    ) { }
 
     async createRequest(
         createRedeemRequestDto: CreateRequestDto,
@@ -18,6 +18,7 @@ class RedeemService {
     ) {
         const existingRequest: RedeemRequest =
             await this.redeemRepository.findRequestByEmployeeWithId(userId);
+        console.log(existingRequest);
         if (existingRequest) {
             throw new HttpException(
                 StatusCodes.FORBIDDEN,
@@ -30,8 +31,8 @@ class RedeemService {
             userId
         );
 
-        if( redeemRequest.employee.bounty -
-                redeemRequest.employee.redeemed_bounty < createRedeemRequestDto.bounty){
+        if (redeemRequest.employee.bounty -
+            redeemRequest.employee.redeemed_bounty < createRedeemRequestDto.bounty) {
             throw new HttpException(
                 StatusCodes.FORBIDDEN,
                 `Insufficient bounty points to initiate a redeem request`
@@ -41,7 +42,7 @@ class RedeemService {
         const minLimit = redeemRequest.employee.redeemed_bounty > 0 ? 25 : 100;
         if (
             redeemRequest.employee.bounty -
-                redeemRequest.employee.redeemed_bounty 
+            redeemRequest.employee.redeemed_bounty
             < minLimit
         ) {
             throw new HttpException(

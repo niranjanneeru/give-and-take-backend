@@ -14,7 +14,7 @@ const dataSource = new DataSource({
     password: process.env.POSTGRES_PASSWORD,
     database: process.env.POSTGRES_DB,
     entities: ["dist/entity/*.js"],
-    // logging: true,
+    logging: true,
     namingStrategy: new SnakeNamingStrategy(),
     migrations: ["dist/db/migrations/*.js"]
     // synchronize: true
