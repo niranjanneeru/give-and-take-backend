@@ -1,9 +1,11 @@
-import { Role } from "./role.enum";
+import Role from "../entity/role.entity";
+
 
 type jwtPayload = {
     name: string,
     email: string,
-    role: Role
+    role: string,
+    id: string
 }
 
 export default jwtPayload;

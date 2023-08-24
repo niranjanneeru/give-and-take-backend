@@ -26,8 +26,7 @@ class CreateEmployeeDto{
     password: string;
 
     @IsNotEmpty()
-    @IsEnum(Role)
-    role : Role;
+    role : string;
 
     @IsNotEmpty()
     @IsNumber()
