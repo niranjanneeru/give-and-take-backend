@@ -76,7 +76,7 @@ class TaskController {
         const filterCondition = req.query.status as string;
         const searchQuery = req.query.search as string;
         let reqPage = 0;
-        let reqPageSize = 23;
+        let reqPageSize = 100;
         if(req.query.page && req.query.pageSize){
             reqPage = +req.query.page;
             reqPageSize = +req.query.pageSize;
