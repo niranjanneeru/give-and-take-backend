@@ -1,13 +1,14 @@
 import { NextFunction, Request, Response, Router } from "express";
 import uploadFileMiddleware from "../middleware/upload.middleware";
-import HttpException from "../exception/http.exception";
 import ValidationException from "../exception/validation.exception";
 import { StatusCodes } from "../utils/status.code.enum";
-import { ValidationError } from "class-validator";
 import ResponseBody from "../utils/response.body";
 import { StatusMessages } from "../utils/status.message.enum";
 import get_path from "../utils/path";
 import path from "path";
+import fs from 'fs'
+import mime from "mime";
+import HttpException from "../exception/http.exception";
 
 
 export class UploadController {
@@ -24,9 +25,21 @@ export class UploadController {
         const filename = req.params.filename;
         const filePath = path.join(get_path(), ".." , "uploads", filename);
 
-        res.download(filePath, filename, (err) => {
-            console.log(err);
-        })
+        if (fs.existsSync(filePath)) {
+            const contentType = mime.lookup(filePath);
+        
+            if (contentType) {
+              res.setHeader('Content-disposition', `attachment; filename=${filename}`);
+              res.setHeader('Content-type', contentType);
+        
+              const fileStream = fs.createReadStream(filePath);
+              fileStream.pipe(res);
+            } else {
+                throw new HttpException(StatusCodes.UNSUPPORTED_MEDIA_TYPE, StatusMessages.UNSUPPORTED_MEDIA_TYPE);
+            }
+          } else {
+            throw new HttpException(StatusCodes.NOT_FOUND, StatusMessages.NOT_FOUND)
+          }
     }
 
     upload = async (req: Request, res: Response, next: NextFunction) => {
