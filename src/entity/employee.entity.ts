@@ -20,6 +20,7 @@ import Task from "./task.entity";
 import TaskComments from "./comment.entity";
 import RedeemRequest from "./redeem.entity";
 
+
 @Entity()
 @Index(["email"], { unique: true })
 export default class Employee extends AbstractEntity {
@@ -84,6 +85,8 @@ export default class Employee extends AbstractEntity {
 
     @OneToMany(() => RedeemRequest, (request) => request.approvedBy)
     requestsApproved: RedeemRequest[];
+
+
 
     toJSON() {
         return instanceToPlain(this);

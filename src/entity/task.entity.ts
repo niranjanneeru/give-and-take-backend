@@ -1,27 +1,17 @@
-import Address from './address.entity';
-import Department from './department.entity';
 import Employee from './employee.entity';
 import AbstractEntity from './abstract.enitiy';
-import { Role } from '../utils/role.enum';
-import { Exclude, instanceToPlain } from 'class-transformer';
-import { Status } from '../utils/status.enum';
 import { TaskStatus } from '../utils/taskStatus.enum';
 import Comment from './comment.entity';
 
 import {
     Column,
     Entity,
-    Index,
     JoinColumn,
     JoinTable,
     ManyToMany,
     ManyToOne,
     OneToMany,
-    OneToOne,
-    PrimaryColumn,
     PrimaryGeneratedColumn,
-    RelationId,
-    Timestamp,
 } from "typeorm";
 
 @Entity()
