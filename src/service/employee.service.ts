@@ -44,6 +44,14 @@ class EmployeeService {
         }
         return employee;
     }
+    
+    async getEmployeeTasksByID(id: string): Promise<Employee | null> {
+        const employee = await this.employeeRepository.findEmployeeByIDWithTasks(id);
+        if (!employee) {
+            throw new HttpException(StatusCodes.NOT_FOUND, `Employee with id ${id} not found`);
+        }
+        return employee;
+    }
 
 
     async createEmployee(employeeDta: CreateEmployeeDto): Promise<Employee> {
