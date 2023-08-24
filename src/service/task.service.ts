@@ -6,6 +6,7 @@ import { TaskStatus } from "../utils/taskStatus.enum";
 import SetTaskDto from "../dto/patch-task.dto";
 import HttpException from "../exception/http.exception";
 import { StatusCodes } from "../utils/status.code.enum";
+import PatchTaskAssigneesDto from "../dto/patch.task.assignees.dto";
 
 class TaskService {
     constructor(
@@ -108,6 +109,35 @@ class TaskService {
         return this.taskRepository.updateTask(task);
     };
 
+    addAssigneesListToTask =async (taskId: string, dto: PatchTaskAssigneesDto) => {
+        const task = await this.taskRepository.findTaskAssignees(taskId);
+        
+        if (!task) {
+            throw new HttpException(StatusCodes.NOT_FOUND, `Task not found`);
+        }
+
+        if(dto.assignees.length > task.maxParticipants){
+            throw new HttpException(StatusCodes.BAD_REQUEST, 'Participant Count Exceeds');
+        }
+
+        const assignees = [];
+
+        for(const assignee of dto.assignees){
+            const temp = await this.employeeService.getEmployeeByID(assignee);
+            if(!temp){
+                throw new HttpException(StatusCodes.NOT_FOUND, `Employee not found`);
+            }
+            assignees.push(temp);
+        }
+
+        task.employees = assignees;
+
+        task.status = TaskStatus.IN_PROGRESS;
+
+        return this.taskRepository.updateTask(task);
+
+    }
+
     addAssigneesToTask = async (
         taskId: string,
         assigneeId: string
@@ -118,11 +148,6 @@ class TaskService {
         if (!task && !employee) {
             throw new HttpException(404, `Task or Employee not found`);
         }
-
-        console.log(task);
-
-        console.log(task.employees.length);
-        console.log(task.maxParticipants);
 
         if(task.employees.length >= task.maxParticipants){
             throw new HttpException(400, 'Participant Count Exceeds');
