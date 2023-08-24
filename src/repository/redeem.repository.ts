@@ -3,7 +3,7 @@ import RedeemRequest from "../entity/redeem.entity";
 import { when } from "jest-when";
 
 class RedeemRepository {
-    constructor(private repository: Repository<RedeemRequest>) {}
+    constructor(private repository: Repository<RedeemRequest>) { }
 
     createRequest(redeemRequest: RedeemRequest): Promise<RedeemRequest> {
         return this.repository.save(redeemRequest);
@@ -15,6 +15,9 @@ class RedeemRepository {
                 employee: true,
                 approvedBy: true,
             },
+            where: {
+                isApproved: false
+            }
         });
     }
 

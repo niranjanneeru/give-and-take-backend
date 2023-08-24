@@ -12,9 +12,6 @@ class PatchRedeemRequestDto {
     @IsNotEmpty()
     @IsBoolean()
     isApproved: boolean;
-
-    @IsNotEmpty()
-    approvedBy: Employee;
 }
 
 export default PatchRedeemRequestDto;

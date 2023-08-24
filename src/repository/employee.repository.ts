@@ -26,6 +26,19 @@ class EmployeeRepository {
             },
         });
     }
+   
+    findEmployeeByIDWithTasks(id: string): Promise<Employee>{
+        return this.repository.findOne({
+            where: { id },
+            relations: {
+                address: true,
+                department: true,
+                role: true,
+                tasks: true,
+                tasksCreated: true  
+            },
+        });
+    }
 
     countEmployee(): Promise<number> {
         return this.repository.count();
