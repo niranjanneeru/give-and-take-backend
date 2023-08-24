@@ -12,6 +12,7 @@ import SetAddressDto from '../dto/patch-address.dto';
 import jwtPayload from '../utils/jwt.payload.type';
 import DepartmentService from './department.service';
 import { StatusCodes } from '../utils/status.code.enum';
+import RoleService from './role.service';
 
 class EmployeeService {
 
@@ -19,7 +20,8 @@ class EmployeeService {
     //     return this.employeeRepository.findByFilter(arg);
     // }
     constructor(private employeeRepository: EmployeeRepository,
-        private departmentService: DepartmentService) { }
+        private departmentService: DepartmentService,
+        private roleService: RoleService) { }
 
     getAllEmployees(params) {
         let pageSize = 10;
@@ -42,6 +44,14 @@ class EmployeeService {
         }
         return employee;
     }
+    
+    async getEmployeeTasksByID(id: string): Promise<Employee | null> {
+        const employee = await this.employeeRepository.findEmployeeByIDWithTasks(id);
+        if (!employee) {
+            throw new HttpException(StatusCodes.NOT_FOUND, `Employee with id ${id} not found`);
+        }
+        return employee;
+    }
 
 
     async createEmployee(employeeDta: CreateEmployeeDto): Promise<Employee> {
@@ -53,9 +63,14 @@ class EmployeeService {
         employee.name = employeeDta.name;
         employee.email = employeeDta.email;
         employee.password = await bcrypt.hash(employeeDta.password, +process.env.PASSWORD_HASH_ROUND);
-        employee.role = employeeDta.role;
         employee.experience = employeeDta.experience;
         employee.joiningDate = employeeDta.joiningDate;
+
+        const role = await this.roleService.getRoleByName(employeeDta.role);
+        if(!role){
+            throw new HttpException(StatusCodes.NOT_FOUND, `Role ${employeeDta.role} not found`);
+        }
+        employee.role = role;
 
         const department = await this.departmentService.getDepartmentById(employeeDta.departmentId, false);
         if (!department) {
@@ -133,7 +148,8 @@ class EmployeeService {
         const payload: jwtPayload = {
             name: employee.name,
             email: employee.email,
-            role: employee.role
+            role: employee.role.name,
+            id: employee.id
         }
 
         const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {
@@ -141,6 +157,10 @@ class EmployeeService {
         });
 
         return { token, employeeDetails: employee };
+    }
+
+    getEmployeeByEmail=async (email:string)=>{
+        return this.employeeRepository.findEmployeeByEmail(email);
     }
 }
 

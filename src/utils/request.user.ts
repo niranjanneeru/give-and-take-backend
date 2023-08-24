@@ -1,10 +1,11 @@
 import { Request } from "express";
-import { Role } from "./role.enum";
+import Role from "../entity/role.entity";
 
 interface RequestWithUser extends Request{
     name: string,
     email : string,
-    role : Role
+    role : string,
+    userId: string
 }
 
 export default RequestWithUser;
