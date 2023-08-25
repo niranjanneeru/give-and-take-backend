@@ -24,7 +24,7 @@ class EmployeeService {
         private roleService: RoleService) { }
 
     getAllEmployees(params) {
-        let pageSize = 10;
+        let pageSize = 100;
         let page = 0;
         if (params) {
             if (params.pageSize) pageSize = +params.pageSize;

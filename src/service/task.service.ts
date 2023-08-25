@@ -12,21 +12,37 @@ class TaskService {
     constructor(
         private taskRepository: TaskRepository,
         private employeeService: EmployeeService
-    ) {}
+    ) { }
 
-    async getTasks(filter: string, searchQuery: string) {
+    getTasksCount() {
+        return this.taskRepository.countTasks();
+    }
+
+    async getTasks(filter: string, searchQuery: string, pageSize, page): Promise<{ page: number, pageSize: number, taskPromise?: Promise<Task[]>, totalCount?: Promise<number> }> {
+        const paginatedData = {
+            page: page + 1,
+            pageSize: pageSize
+        }
         if (
             filter == TaskStatus.CREATED ||
             filter == TaskStatus.IN_PROGRESS ||
             filter == TaskStatus.REQUEST_CHANGE ||
             filter == TaskStatus.COMPLETED
         ) {
-            return this.taskRepository.findTasksByTaskCompletionStatus(filter, searchQuery);
+            paginatedData['taskPromise'] = this.taskRepository.findTasksByTaskCompletionStatus(filter, searchQuery, page * pageSize, pageSize);
+            paginatedData['totalCount'] = this.taskRepository.findTasksByTaskCompletionStatusCount(filter, searchQuery);
         } else if (filter == TaskStatus.IS_EXPIRED) {
-            return this.taskRepository.findExpiredTasks(searchQuery);
+            paginatedData['taskPromise'] = this.taskRepository.findExpiredTasks(searchQuery, page * pageSize, pageSize);
+            paginatedData['totalCount'] = this.taskRepository.findExpiredTasksCount(searchQuery);
         } else if (filter == TaskStatus.IS_DIRECT_BOUNTY) {
-            return this.taskRepository.findDirectBountyTasks(searchQuery);
-        } else return this.taskRepository.findTasks(searchQuery);
+            paginatedData['taskPromise'] = this.taskRepository.findDirectBountyTasks(searchQuery, page * pageSize, pageSize);
+            paginatedData['totalCount'] = this.taskRepository.findDirectBountyTasksCount(searchQuery);
+        } else {
+            paginatedData['taskPromise'] = this.taskRepository.findTasks(searchQuery, page * pageSize, pageSize);
+            paginatedData['totalCount'] = this.taskRepository.findTasksCount(searchQuery);
+        }
+
+        return paginatedData;
     }
 
     async getTaskById(id: string) {
@@ -109,22 +125,22 @@ class TaskService {
         return this.taskRepository.updateTask(task);
     };
 
-    addAssigneesListToTask =async (taskId: string, dto: PatchTaskAssigneesDto) => {
+    addAssigneesListToTask = async (taskId: string, dto: PatchTaskAssigneesDto) => {
         const task = await this.taskRepository.findTaskAssignees(taskId);
-        
+
         if (!task) {
             throw new HttpException(StatusCodes.NOT_FOUND, `Task not found`);
         }
 
-        if(dto.assignees.length > task.maxParticipants){
+        if (dto.assignees.length > task.maxParticipants) {
             throw new HttpException(StatusCodes.BAD_REQUEST, 'Participant Count Exceeds');
         }
 
         const assignees = [];
 
-        for(const assignee of dto.assignees){
+        for (const assignee of dto.assignees) {
             const temp = await this.employeeService.getEmployeeByID(assignee);
-            if(!temp){
+            if (!temp) {
                 throw new HttpException(StatusCodes.NOT_FOUND, `Employee not found`);
             }
             assignees.push(temp);
@@ -149,7 +165,7 @@ class TaskService {
             throw new HttpException(404, `Task or Employee not found`);
         }
 
-        if(task.employees.length >= task.maxParticipants){
+        if (task.employees.length >= task.maxParticipants) {
             throw new HttpException(400, 'Participant Count Exceeds');
         }
 
