@@ -12,8 +12,7 @@ class TaskRepository {
     }
 
     findTasks(searchQuery: string): Promise<Task[]> {
-        let whereConditions = [{ status: TaskStatus.CREATED }, { status: TaskStatus.IN_PROGRESS }]
-        whereConditions['deadline'] = Raw((alias) => `${alias} > NOW()`)
+        let whereConditions = [{ status: TaskStatus.CREATED, deadline:  Raw((alias) => `${alias} >= NOW()`)}, { status: TaskStatus.IN_PROGRESS , deadline:  Raw((alias) => `${alias} >= NOW()`) }]
         if (searchQuery) {
             whereConditions = whereConditions.map((condition) => {
                 condition['title'] = Like(`%${searchQuery}%`)
@@ -33,10 +32,13 @@ class TaskRepository {
     findTasksByTaskCompletionStatus(filter: string, searchQuery: string): Promise<Task[]> {
         const whereConditions = { status: filter }
         if (searchQuery) whereConditions['title'] = Like(`%${searchQuery}%`);
+        if(filter === TaskStatus.CREATED || filter === TaskStatus.IN_PROGRESS){
+            whereConditions['deadline'] = Raw((alias) => `${alias} >= NOW()`);
+        }
         return this.repository
             .createQueryBuilder("task")
             .where(whereConditions)
-            .orderBy('createdAt', 'DESC')
+            .orderBy('task.createdAt', 'DESC')
             .leftJoinAndSelect("task.employees", "employees")
             .getMany();
     }
@@ -47,7 +49,7 @@ class TaskRepository {
         return this.repository.createQueryBuilder("task")
             .leftJoinAndSelect("task.employees", "employees")
             .where(whereConditions)
-            .orderBy('createdAt', 'DESC')
+            .orderBy('task.createdAt', 'DESC')
             .getMany();
     }
 
@@ -59,7 +61,7 @@ class TaskRepository {
             .createQueryBuilder("task")
             .where({ isDirectBounty: true })
             .leftJoinAndSelect("task.employees", "employees")
-            .orderBy('createdAt', 'DESC')
+            .orderBy('task.createdAt', 'DESC')
             .getMany();
     }
 
