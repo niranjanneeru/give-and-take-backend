@@ -75,9 +75,26 @@ class TaskController {
     getAllTasks = async (req: Request, res: Response) => {
         const filterCondition = req.query.status as string;
         const searchQuery = req.query.search as string;
-        const tasks = await this.taskService.getTasks(filterCondition, searchQuery);
+        let reqPage = 0;
+        let reqPageSize = 5;
+        if(req.query.page && req.query.pageSize){
+            reqPage = +req.query.page;
+            reqPageSize = +req.query.pageSize;
+        } 
+        const {taskPromise, page, pageSize, totalCount} = await this.taskService.getTasks(filterCondition, searchQuery, reqPageSize, reqPage);
+        const tasks = await taskPromise;
         const responseBody = new ResponseBody(tasks, null, StatusMessages.OK);
-        responseBody.set_meta(tasks.length);
+        const responseCount = await totalCount;
+        if (page * pageSize >= responseCount) {
+            responseBody.set_meta(tasks.length, responseCount);
+        } else {
+            responseBody.set_meta(
+                tasks.length,
+                responseCount,
+                { pageSize },
+                { page }
+            );
+        }
         res.status(StatusCodes.OK).send(responseBody);
     };
 

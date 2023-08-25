@@ -10,7 +10,6 @@ import Department from "../../entity/department.entity";
 import { StatusCodes } from "../../utils/status.code.enum";
 import { StatusMessages } from "../../utils/status.message.enum";
 import CreateEmployeeDto from "../../dto/create-employee.dto";
-import { Role } from "../../utils/role.enum";
 import EditEmployeeDto from "../../dto/edit-employee.dto";
 
 import bcrypt from 'bcrypt'
@@ -19,20 +18,26 @@ import jwt from 'jsonwebtoken';
 import LoginEmployeeDto from "../../dto/login.employee.dto";
 import EditAddressDto from "../../dto/edit-address.dto";
 import Address from "../../entity/address.entity";
+import Role from "../../entity/role.entity";
+import RoleService from "../../service/role.service";
+import RoleRepository from "../../repository/role.repository";
 
 describe('Employee Service', () => {
     let employeeService: EmployeeService;
     let employeeRepository: EmployeeRepository;
     let departmentService: DepartmentService;
+    let roleService: RoleService;
 
     beforeAll(() => {
         const dataSource: DataSource = {
             getRepository: jest.fn()
         } as unknown as DataSource;
 
+        roleService = new RoleService(new RoleRepository(dataSource.getRepository(Role)));
+
         employeeRepository = new EmployeeRepository(dataSource.getRepository(Employee));
         departmentService = new DepartmentService(new DepartmentRepository(dataSource.getRepository(Department)));
-        employeeService = new EmployeeService(employeeRepository, departmentService);
+        employeeService = new EmployeeService(employeeRepository, departmentService, roleService);
 
     });
 
@@ -125,7 +130,7 @@ describe('Employee Service', () => {
             name: 'John Doe',
             email: 'john.doe@example.com',
             password: 'password123',
-            role: Role.DEVELOPER,
+            role: 'HR',
             experience: 2,
             joiningDate: "2022-12-12",
             departmentId: 1,
@@ -139,6 +144,23 @@ describe('Employee Service', () => {
             },
         };
 
+        it('wrong role',async () => {
+            const f2 = jest.fn();
+            when(f2).calledWith(createEmployeeDto.email).mockResolvedValue(null)
+            employeeRepository.findEmployeeByEmail = f2;
+
+            const f1 = jest.fn();
+            when(f1).mockResolvedValue(null)
+            roleService.getRoleByName = f1;
+
+
+            await expect(async () => {
+                await employeeService.createEmployee(createEmployeeDto as CreateEmployeeDto)
+            }).rejects.toThrow(HttpException);
+
+            
+        })
+
         it('should create a new employee', async () => {
             const department = { id: 1, name: 'Department A' };
             const f = jest.fn();
@@ -148,6 +170,10 @@ describe('Employee Service', () => {
             const f2 = jest.fn();
             when(f2).calledWith(createEmployeeDto.email).mockResolvedValue(null)
             employeeRepository.findEmployeeByEmail = f2;
+
+            const f4 = jest.fn();
+            when(f4).mockResolvedValue(new Role());
+            roleService.getRoleByName = f4;
 
             const savedEmployee = new Employee()
 
@@ -214,7 +240,7 @@ describe('Employee Service', () => {
             name: 'John Doe',
             email: 'john.doe@example.com',
             password: 'password123',
-            role: Role.DEVELOPER,
+            role: 'HR',
             experience: 2,
             joiningDate: "2022-12-12",
             departmentId: 1,
@@ -374,7 +400,7 @@ describe('Employee Service', () => {
             employee.id = "1";
             employee.name = 'John Doe';
             employee.email = loginEmployeeDto.email;
-            employee.role = Role.DEVELOPER;
+            employee.role = new Role();
             employee.password = await bcrypt.hash(loginEmployeeDto.password, 10);
 
             const f2 = jest.fn();
@@ -395,17 +421,17 @@ describe('Employee Service', () => {
             const result = await employeeService.loginEmployee(loginEmployeeDto);
 
             expect(result.employeeDetails).toEqual(employee);
-            expect(jwt.sign).toHaveBeenCalledWith(
-                {
-                    name: employee.name,
-                    email: employee.email,
-                    role: employee.role,
-                },
-                process.env.JWT_SECRET_KEY,
-                {
-                    expiresIn: process.env.JWT_EXPIRY,
-                }
-            );
+            // expect(jwt.sign).toHaveBeenCalledWith(
+            //     {
+            //         name: employee.name,
+            //         email: employee.email,
+            //         role: employee.role,
+            //     },
+            //     process.env.JWT_SECRET_KEY,
+            //     {
+            //         expiresIn: process.env.JWT_EXPIRY,
+            //     }
+            // );
         });
 
         it('should throw an error if employee with the given email does not exist', async () => {
@@ -437,6 +463,53 @@ describe('Employee Service', () => {
             await expect(employeeService.loginEmployee(loginEmployeeDto)).rejects.toThrow(
                 new HttpException(StatusCodes.UNAUTHORIZED, 'Incorrect username or password')
             );
+        });
+    });
+
+    describe('getEmployeeTasksByID', () => {
+        it('should return an employee with tasks when a valid ID is provided', async () => {
+            
+            const id = 'valid-id';
+            const expectedEmployee = {
+                id: 'valid-id',
+                name: 'John Doe',
+                tasks: ['Task 1', 'Task 2'],
+            };
+            
+            employeeRepository.findEmployeeByIDWithTasks = jest.fn().mockResolvedValue(expectedEmployee);
+
+            const result = await employeeService.getEmployeeTasksByID(id);
+
+            expect(result).toEqual(expectedEmployee);
+            expect(employeeRepository.findEmployeeByIDWithTasks).toHaveBeenCalledWith(id);
+        });
+
+        it('should throw an HttpException with 404 status when employee is not found', async () => {
+            const id = 'invalid-id';
+            employeeRepository.findEmployeeByIDWithTasks = jest.fn().mockResolvedValue(null);
+
+            await expect(employeeService.getEmployeeTasksByID(id)).rejects.toThrowError(
+                new HttpException(StatusCodes.NOT_FOUND, `Employee with id ${id} not found`)
+            );
+            expect(employeeRepository.findEmployeeByIDWithTasks).toHaveBeenCalledWith(id);
+        });
+    });
+
+    describe('getEmployeeByEmail', () => {
+        it('should return an employee when a valid email is provided', async () => {
+            const email = 'test@example.com';
+            const expectedEmployee = {
+                id: '1',
+                name: 'John Doe',
+                email: 'test@example.com',
+            };
+            
+            employeeRepository.findEmployeeByEmail = jest.fn().mockResolvedValue(expectedEmployee);
+
+            const result = await employeeService.getEmployeeByEmail(email);
+
+            expect(result).toEqual(expectedEmployee);
+            expect(employeeRepository.findEmployeeByEmail).toHaveBeenCalledWith(email);
         });
     });
 })

@@ -11,9 +11,12 @@ class TaskRepository {
         return this.repository.save(task);
     }
 
-    findTasks(searchQuery: string): Promise<Task[]> {
-        let whereConditions = [{ status: TaskStatus.CREATED }, { status: TaskStatus.IN_PROGRESS }]
-        whereConditions['deadline'] = Raw((alias) => `${alias} > NOW()`)
+    countTasks() {
+        return this.repository.count();
+    }
+
+    findTasks(searchQuery: string, skip, take): Promise<Task[]> {
+        let whereConditions = [{ status: TaskStatus.CREATED, deadline: Raw((alias) => `${alias} >= NOW()`) }, { status: TaskStatus.IN_PROGRESS, deadline: Raw((alias) => `${alias} >= NOW()`) }]
         if (searchQuery) {
             whereConditions = whereConditions.map((condition) => {
                 condition['title'] = Like(`%${searchQuery}%`)
@@ -27,31 +30,82 @@ class TaskRepository {
             relations: {
                 employees: true,
             },
+            skip: skip,
+            take: take
         });
     }
 
-    findTasksByTaskCompletionStatus(filter: string, searchQuery: string): Promise<Task[]> {
+    findTasksCount(searchQuery: string): Promise<number> {
+        let whereConditions = [{ status: TaskStatus.CREATED, deadline: Raw((alias) => `${alias} >= NOW()`) }, { status: TaskStatus.IN_PROGRESS, deadline: Raw((alias) => `${alias} >= NOW()`) }]
+        if (searchQuery) {
+            whereConditions = whereConditions.map((condition) => {
+                condition['title'] = Like(`%${searchQuery}%`)
+                return condition;
+            })
+        }
+
+        return this.repository.count({
+            order: { createdAt: "DESC" },
+            where: whereConditions,
+            relations: {
+                employees: true,
+            }
+        });
+    }
+
+    findTasksByTaskCompletionStatusCount(filter: string, searchQuery: string): Promise<number> {
         const whereConditions = { status: filter }
         if (searchQuery) whereConditions['title'] = Like(`%${searchQuery}%`);
+        if (filter === TaskStatus.CREATED || filter === TaskStatus.IN_PROGRESS) {
+            whereConditions['deadline'] = Raw((alias) => `${alias} >= NOW()`);
+        }
         return this.repository
             .createQueryBuilder("task")
             .where(whereConditions)
-            .orderBy('createdAt', 'DESC')
+            .orderBy('task.createdAt', 'DESC')
             .leftJoinAndSelect("task.employees", "employees")
+            .getCount();
+    }
+
+    findTasksByTaskCompletionStatus(filter: string, searchQuery: string, skip, take): Promise<Task[]> {
+        const whereConditions = { status: filter }
+        if (searchQuery) whereConditions['title'] = Like(`%${searchQuery}%`);
+        if (filter === TaskStatus.CREATED || filter === TaskStatus.IN_PROGRESS) {
+            whereConditions['deadline'] = Raw((alias) => `${alias} >= NOW()`);
+        }
+        return this.repository
+            .createQueryBuilder("task")
+            .where(whereConditions)
+            .orderBy('task.createdAt', 'DESC')
+            .leftJoinAndSelect("task.employees", "employees")
+            .skip(skip)
+            .take(take)
             .getMany();
     }
 
-    async findExpiredTasks(searchQuery: string): Promise<Task[]> {
+    findExpiredTasks(searchQuery: string, skip, take): Promise<Task[]> {
         const whereConditions = { deadline: Raw((alias) => `${alias} < NOW()`) }
         if (searchQuery) whereConditions['title'] = Like(`%${searchQuery}%`);
         return this.repository.createQueryBuilder("task")
             .leftJoinAndSelect("task.employees", "employees")
             .where(whereConditions)
-            .orderBy('createdAt', 'DESC')
+            .orderBy('task.createdAt', 'DESC')
+            .skip(skip)
+            .take(take)
             .getMany();
     }
 
-    findDirectBountyTasks(searchQuery: string): Promise<Task[]> {
+    findExpiredTasksCount(searchQuery: string): Promise<number> {
+        const whereConditions = { deadline: Raw((alias) => `${alias} < NOW()`) }
+        if (searchQuery) whereConditions['title'] = Like(`%${searchQuery}%`);
+        return this.repository.createQueryBuilder("task")
+            .leftJoinAndSelect("task.employees", "employees")
+            .where(whereConditions)
+            .orderBy('task.createdAt', 'DESC')
+            .getCount();
+    }
+
+    findDirectBountyTasks(searchQuery: string, skip, take): Promise<Task[]> {
         const whereConditions = { isDirectBounty: true }
         if (searchQuery) whereConditions['title'] = Like(`%${searchQuery}%`);
 
@@ -59,8 +113,22 @@ class TaskRepository {
             .createQueryBuilder("task")
             .where({ isDirectBounty: true })
             .leftJoinAndSelect("task.employees", "employees")
-            .orderBy('createdAt', 'DESC')
+            .orderBy('task.createdAt', 'DESC')
+            .skip(skip)
+            .take(take)
             .getMany();
+    }
+
+    findDirectBountyTasksCount(searchQuery: string): Promise<number> {
+        const whereConditions = { isDirectBounty: true }
+        if (searchQuery) whereConditions['title'] = Like(`%${searchQuery}%`);
+
+        return this.repository
+            .createQueryBuilder("task")
+            .where({ isDirectBounty: true })
+            .leftJoinAndSelect("task.employees", "employees")
+            .orderBy('task.createdAt', 'DESC')
+            .getCount();
     }
 
     findTaskById(id): Promise<Task> {
